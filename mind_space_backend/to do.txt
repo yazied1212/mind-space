@@ -1,0 +1,13 @@
+secure forgot password and 2fa chain
+AppError class
+login with google
+create article does't accept jpg but pfp does
+optional params does't work in new express versions(comments endpoints)
+reset pfp to default
+using therapist in isAuthorized
+admin apis
+feedback apis
+anonymous user(role:guest)
+test apis
+socket io apis(session and support groups)
+endpoints documentation
