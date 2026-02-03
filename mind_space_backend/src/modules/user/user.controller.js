@@ -1,14 +1,14 @@
 import { Router } from "express";
-import { isAuthenticate } from "../../middlewares/auth.js";
 import { asyncHandler, cloudUpload, fileValidation, roles } from "../../utils/index.js";
-import { isAuthorized } from "../../middlewares/isAuthorized.js";
-import { deactivate, profile, updateUser, upPfp } from "./user.service.js";
+import { deactivate, profile, resetPfp, updateUser, upPfp } from "./user.service.js";
 import { updatedUserSchema } from "./user.validation.js";
-import { isValid } from "../../middlewares/isValid.js";
+import { isAuthenticate, isAuthorized, isValid } from "../../middlewares/index.js";
+
 
 const router =Router()
 
-router.use(isAuthenticate, isAuthorized(roles.user));
+router.use(isAuthenticate, isAuthorized([roles.user,roles.therapist]));
+
 router.get("/profile", asyncHandler(profile));
 router.delete("/deactivate", asyncHandler(deactivate));
 router.put(
@@ -21,6 +21,7 @@ router.post(
   cloudUpload(fileValidation.images).single("pfp"),
   asyncHandler(upPfp),
 );
+router.patch("/reset-profile-picture",asyncHandler(resetPfp))
 
 
 

@@ -1,6 +1,6 @@
 export const errorHandler=(error,req,res,next)=>{
 
-    return res.status(error.cause||500).json({
+    return res.status(error.statusCode).json({
         success:false,
         message:error.message,
     })

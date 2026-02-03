@@ -9,7 +9,7 @@ const messageSchema=new Schema({
 })
 //schema
 const sessionSchema=new Schema({
-    patientId:{type:Types.ObjectId,ref:"User",required:true},
+   userId:{type:Types.ObjectId,ref:"User",required:true},
     therapistId:{type:Types.ObjectId,ref:"User",required:true},
     sessionTime:{type:String,required:true},
     status:{type:String,required:true,enum:sessionStatus},

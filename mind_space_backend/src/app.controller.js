@@ -4,6 +4,7 @@ import authRouter from "./modules/auth/auth.controller.js"
 import userRouter from "./modules/user/user.controller.js"
 import articleRouter from "./modules/article/article.controller.js"
 import commentRouter from "./modules/comment/comment.controller.js"
+import feedbackRouter from "./modules/feedback/feedback.controller.js"
 
 export const bootStrap=async(express,app)=>{
     app.use(express.json())
@@ -14,6 +15,7 @@ export const bootStrap=async(express,app)=>{
     app.use("/user",userRouter)
     app.use("/article",articleRouter)
     app.use("/comment",commentRouter)
+    app.use("/feedback",feedbackRouter)
 
     
     app.use(("*path"),notfound)

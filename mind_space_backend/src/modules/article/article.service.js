@@ -1,5 +1,5 @@
 import { Article } from "../../db/models/article.js";
-import { messages } from "../../utils/index.js";
+import { AppError, messages } from "../../utils/index.js";
 import cloudinary from "../../utils/multer/cloud-config.js";
 
 export const createArticle = async (req, res, next) => {
@@ -28,7 +28,7 @@ export const createArticle = async (req, res, next) => {
 export const likeUnlike = async (req, res, next) => {
   const article = await Article.findById(req.params.id);
   if (!article) {
-    return next(new Error(messages.article.notFound, { cause: 404 }));
+    return next(new AppError(messages.article.notFound,  404 ));
   }
 
   const userIndex = article.likes.indexOf(req.authUser._id);
@@ -70,7 +70,7 @@ export const getArticles = async (req, res, next) => {
     .skip(skip);
 
   if (!articles) {
-    return next(new Error(messages.article.notFound, { cause: 404 }));
+    return next(new AppError(messages.article.notFound,  404 ));
   }
 
   return res.status(200).json({
@@ -92,7 +92,7 @@ export const getSpecificArticle = async (req, res, next) => {
   ]);
 
   if (!article) {
-    return next(new Error(messages.article.notFound, { cause: 404 }));
+    return next(new AppError(messages.article.notFound,  404 ));
   }
 
   return res.status(200).json({
@@ -107,11 +107,11 @@ export const archiveArticle = async (req, res, next) => {
 
   const article = await Article.findOne({ _id: id, isDeleted: false });
   if (!article) {
-    return next(new Error(messages.article.notFound, { cause: 404 }));
+    return next(new AppError(messages.article.notFound,  404 ));
   }
 
   if (article.publisher.toString() != req.authUser.id) {
-    return next(new Error("not allowed", { cause: 401 }));
+    return next(new AppError("not allowed",  401 ));
   }
 
   article.isDeleted = true;
@@ -129,11 +129,11 @@ export const restoreArticle = async (req, res, next) => {
 
   const article = await Article.findOne({ _id: id, isDeleted: true });
   if (!article) {
-    return next(new Error(messages.article.notFound, { cause: 404 }));
+    return next(new AppError(messages.article.notFound,  404 ));
   }
 
   if (article.publisher.toString() != req.authUser.id) {
-    return next(new Error("not allowed", { cause: 401 }));
+    return next(new AppError("not allowed",  401 ));
   }
 
   article.isDeleted = false;
@@ -157,11 +157,11 @@ export const deleteArticle = async (req, res, next) => {
     },
   ]);
   if (!article) {
-    return next(new Error(messages.article.notFound, { cause: 404 }));
+    return next(new AppError(messages.article.notFound,  404 ));
   }
 
   if (article.publisher.toString() != req.authUser.id) {
-    return next(new Error("not allowed", { cause: 401 }));
+    return next(new AppError("not allowed",  401 ));
   }
 
   for (const file of article.attachments) {
@@ -189,16 +189,16 @@ export const undoArticle = async (req, res, next) => {
   const { id } = req.params;
   const article = await Article.findById(id);
   if (!article) {
-    return next(new Error(messages.article.notFound, { cause: 404 }));
+    return next(new AppError(messages.article.notFound,  404 ));
   }
 
   if (article.publisher.toString() != req.authUser.id) {
-    return next(new Error("now allowed", { cause: 401 }));
+    return next(new AppError("now allowed",  401 ));
   }
 
   if (Date.now() > article.createdAt.getTime() + 120000) {
     return next(
-      new Error("now allowed to undo after 2 minutes", { cause: 400 }),
+      new AppError("now allowed to undo after 2 minutes",  400 ),
     );
   }
 

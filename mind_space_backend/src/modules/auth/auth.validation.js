@@ -72,3 +72,14 @@ export const twoFaLoginSchema = joi
   })
   .required();
 
+export const disable2Fa= joi.object({
+    otp: joi.string().length(6).required(),
+}).required()
+
+//login with google
+export const google = joi
+  .object({
+    idToken: joi.string().required(),
+    role:joi.string().valid(...Object.values(roles)).required(),
+  })
+  .required();

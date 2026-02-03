@@ -3,7 +3,7 @@ import { stars } from "../../utils/index.js"
 
 //schema
 const feedbackSchema=new Schema({
-    patientId:{type:Types.ObjectId,ref:"User",required:true},
+    userId:{type:Types.ObjectId,ref:"User",required:true},
     therapistId:{type:Types.ObjectId,ref:"User",required:true},
     stars:{type:Number,required:true,enum:stars},
     content:{type:String}

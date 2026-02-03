@@ -1,6 +1,8 @@
 import { User } from "../../db/models/user.js";
-import { defaultPfpId, messages } from "../../utils/index.js";
+import { defaultPfpId, defaultPfpUrl, messages } from "../../utils/index.js";
 import cloudinary from "../../utils/multer/cloud-config.js";
+
+
 
 //get profile
 export const profile = (req, res, next) => {
@@ -63,5 +65,24 @@ export const upPfp = async (req, res, next) => {
     data: pfp.pfp,
   });
 };
+
+
+export const resetPfp= async(req,res,next)=>{
+
+  if(req.authUser.pfp.secure_id==defaultPfpId){
+    return next(new AppError(messages.pfp.notFound,404))
+  }
+
+  await cloudinary.uploader.destroy(req.authUser.pfp.public_id);
+
+  await User.findByIdAndUpdate(req.authUser._id,{
+    pfp:{secure_url:defaultPfpUrl,public_id:defaultPfpId}
+  })
+
+  return res.status(200).json({
+    success:true,
+    message:messages.pfp.deletedSuccessfully
+  })
+}
 
 

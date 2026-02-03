@@ -5,8 +5,8 @@ export const sendEmail = async ({ to, subject, html }) => {
     port: 587,
     secure: false, // true for port 465, false for other ports
     auth: {
-      user: process.env.email,
-      pass: process.env.pass,
+      user: process.env.EMAIL,
+      pass: process.env.PASS,
     },
   });
 

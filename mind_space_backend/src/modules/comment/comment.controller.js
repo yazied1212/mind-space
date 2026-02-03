@@ -1,20 +1,25 @@
 import { Router } from "express";
-import { isAuthenticate } from "../../middlewares/auth.js";
-import { isAuthorized } from "../../middlewares/isAuthorized.js";
 import { asyncHandler, roles } from "../../utils/index.js";
-import { isValid } from "../../middlewares/isValid.js";
 import { createComment, deleteComment, getComments } from "./comment.service.js";
 import { createCommentSchema, deleteCommentsSchema, getCommentsSchema } from "./comment.validation.js";
+import { isAuthenticate, isAuthorized, isValid } from "../../middlewares/index.js";
 
-const router=Router()
-router.use(isAuthenticate, isAuthorized(roles.user));
+const router=Router(({ mergeParams: true }))
+router.use(isAuthenticate, isAuthorized([roles.user,roles.therapist]));
+
+router.post(
+  "/",
+  isValid(createCommentSchema),
+  asyncHandler(createComment),
+);
 router.post(
   "/:id",
   isValid(createCommentSchema),
   asyncHandler(createComment),
 );
-
+router.get("/", isValid(getCommentsSchema), asyncHandler(getComments));
 router.get("/:id", isValid(getCommentsSchema), asyncHandler(getComments));
+
 router.delete(
   "/:id",
   isValid(deleteCommentsSchema),

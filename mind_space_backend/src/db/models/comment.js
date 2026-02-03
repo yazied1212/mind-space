@@ -3,7 +3,7 @@ import { model, Schema, Types } from "mongoose"
 //schema
 const commentSchema=new Schema({
     article:{type:Types.ObjectId,required:true,ref:"article"},
-    userId:{type:Types.ObjectId,required:true,ref:"User"},
+    user:{type:Types.ObjectId,required:true,ref:"User"},
     content:{type:String,required:true},
     likes: [{ type: Types.ObjectId, ref: "User" }],
     parentComment: { type: Types.ObjectId, ref: "Comment" },

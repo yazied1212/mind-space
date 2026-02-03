@@ -22,4 +22,6 @@ export const messages = {
   otp: generateMessages("otp"),
   article: generateMessages("article"),
   comment: generateMessages("comment"),
+  pfp: generateMessages("profile picture"),
+  feedback: generateMessages("feedback"),
 };

@@ -6,7 +6,7 @@ export const createCommentSchema = joi
   .object({
     articleId: generaleField.id.required(),
     id: generaleField.id,
-    content: joi.string(),
+    content: joi.string().required(),
   }).required();
 
 

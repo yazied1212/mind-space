@@ -1,10 +1,8 @@
 secure forgot password and 2fa chain
-AppError class
-login with google
+better imports structure
+login with google(code is ready)
 create article does't accept jpg but pfp does
-optional params does't work in new express versions(comments endpoints)
-reset pfp to default
-using therapist in isAuthorized
+move defaultPfpUrl and defaultPfpId to .env
 admin apis
 feedback apis
 anonymous user(role:guest)

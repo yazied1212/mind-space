@@ -1,4 +1,5 @@
 import joi from "joi";
+import { AppError } from "../utils/index.js";
 
 export const isValid = (schema) => {
   return (req, res, next) => {
@@ -12,12 +13,12 @@ export const isValid = (schema) => {
 
       if (result.error) {
         let messages = result.error.details.map((obj) => obj.message);
-        return next(new Error(messages, { cause: 400 }));
+        return next(new AppError(messages, 400 ));
       }
 
       return next();
     } catch (error) {
-      return next(new Error(error.message));
+      return next(new AppError(error.message));
     }
   };
 };

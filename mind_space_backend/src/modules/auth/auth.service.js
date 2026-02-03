@@ -1,7 +1,8 @@
+import { OAuth2Client } from "google-auth-library";
 import { OTP } from "../../db/models/otp.js";
 import { User } from "../../db/models/user.js";
-import { generateAndSendOtp } from "../../middlewares/otp.js";
-import { messages, sendEmail, signToken, verifyToken } from "../../utils/index.js";
+import { generateAndSendOtp } from "../../middlewares/index.js";
+import { AppError, messages, provider, sendEmail, signToken, verifyToken } from "../../utils/index.js";
 import bcrypt from "bcrypt"
 
 export const signUp = async (req, res, next) => {
@@ -26,7 +27,7 @@ export const signUp = async (req, res, next) => {
         html:`<p>to activate your account please click<a href=${link}>here</a></p>`
     })
     if(!isSent){
-        return next(new Error("fail to send email please try again"))
+        return next(new AppError("fail to send email please try again"))
     }
 
   //res
@@ -42,12 +43,12 @@ export const activateAccount = async (req, res, next) => {
   const token = req.params.token;
   const { id, error } = verifyToken(token);
   if (error) {
-    return next(new Error(error.message));
+    return next(new AppError(error.message));
   }
 
   const user = await User.findByIdAndUpdate(id, { isConfirmed: true });
   if (!user) {
-    return next(new Error(messages.user.notFound, { cause: 404 }));
+    return next(new AppError(messages.user.notFound,  404 ));
   }
 
   return res.status(200).json({
@@ -63,16 +64,16 @@ export const login = async (req, res, next) => {
 
   const emailExists = await User.findOne({ email: email });
   if (!emailExists) {
-    return next(new Error(messages.user.invalidEorP, { cause: 401 }));
+    return next(new AppError(messages.user.invalidEorP,  401 ));
   }
 
   const match = bcrypt.compareSync(password, emailExists.password);
   if (!match) {
-    return next(new Error(messages.user.invalidEorP, { cause: 401 }));
+    return next(new AppError(messages.user.invalidEorP,  401 ));
   }
 
   if(emailExists.isConfirmed===false){
-        return next(new Error("please activate your account",{cause:401}))
+        return next(new AppError("please activate your account",401))
     }
 
   if (emailExists.isDeleted === true) {
@@ -81,7 +82,7 @@ export const login = async (req, res, next) => {
   }
 
   if (emailExists.twoFA === true) {
-    generateAndSendOtp(emailExists.email);
+    await generateAndSendOtp(emailExists.email);
     return res.status(201).json({
       success: true,
       message: messages.otp.createdSuccessfully,
@@ -111,12 +112,12 @@ export const refreshToken = async (req, res, next) => {
   const { error, id, iat } = verifyToken(refreshToken);
 
   if (error) {
-    return next(new Error(error.message));
+    return next(new AppError(error.message));
   }
 
   const user = await User.findById(id);
   if (user.lastPassUpdate && user.lastPassUpdate.getTime() > iat * 1000) {
-    return next(new Error("please log in again"));
+    return next(new AppError("please log in again"));
   }
 
   const accessToken = signToken({
@@ -135,7 +136,7 @@ export const refreshToken = async (req, res, next) => {
 //send otp
 export const sendOTP = async (req, res, next) => {
   const { email } = req.body;
-  generateAndSendOtp(email);
+  await generateAndSendOtp(email);
 
   return res.status(201).json({
     success: true,
@@ -147,7 +148,7 @@ export const verifyOtp = async (req, res, next) => {
   const { email, otp } = req.body;
   const otpMatch = await OTP.findOne({ email: email, otp: otp });
   if (!otpMatch) {
-    return next(new Error("invalid code", { cause: 400 }));
+    return next(new AppError("invalid code",  400 ));
   }
 
   return res.status(200).json({
@@ -164,7 +165,7 @@ export const forgetPassword = async (req, res, next) => {
     { password: newPassword },
   );
   if (!user) {
-    return next(new Error(messages.user.notFound, { cause: 404 }));
+    return next(new AppError(messages.user.notFound,  404 ));
   }
 
   return res.status(200).json({
@@ -175,7 +176,7 @@ export const forgetPassword = async (req, res, next) => {
 
 //2fa
 export const twoFaSendOtp = async (req, res, next) => {
-  generateAndSendOtp(req.authUser.email);
+  await generateAndSendOtp(req.authUser.email);
   return res.status(201).json({
     success: true,
     message: messages.otp.createdSuccessfully,
@@ -186,7 +187,7 @@ export const enable2FA = async (req, res, next) => {
   const { otp } = req.body;
   const otpMatch = await OTP.findOne({ email: req.authUser.email, otp: otp });
   if (!otpMatch) {
-    return next(new Error("invalid code", { cause: 400 }));
+    return next(new AppError("invalid code", 400 ));
   }
 
   const user = req.authUser;
@@ -205,7 +206,7 @@ export const twoFaLogin = async (req, res, next) => {
   const { otp, email } = req.body;
   const otpMatch = await OTP.findOne({ email: email, otp: otp });
   if (!otpMatch) {
-    return next(new Error("invalid code", { cause: 400 }));
+    return next(new AppError("invalid code",  400 ));
   }
 
   const emailExists = await User.findOne({ email: email });
@@ -217,6 +218,76 @@ export const twoFaLogin = async (req, res, next) => {
     payload: { id: emailExists._id },
     options: { expiresIn: "1y" },
   });
+
+  return res.status(200).json({
+    success: true,
+    message: messages.user.login,
+    accessToken: accessToken,
+    refreshToken: refreshToken,
+  });
+};
+
+
+export const Disable2Fa=async(req,res,next)=>{
+
+  const {otp}=req.body
+
+  const otpMatch = await OTP.findOne({ email: req.authUser.email, otp: otp });
+  if (!otpMatch) {
+    return next(new AppError("invalid code",  400 ));
+  }
+
+  await User.findByIdAndUpdate(req.authUser._id,{
+    twoFA:false
+  })
+
+
+  return res.status(200).json({
+    success:true,
+    message:"2 step verification disabled successfully"
+  })
+
+}
+
+//login with google
+const verifyGoogleToken = async (idToken) => {
+  const client = new OAuth2Client();
+  const ticket = await client.verifyIdToken({
+    idToken,
+    audience: process.env.CLIENT_ID,
+  });
+  const payload = ticket.getPayload();
+  return payload;
+};
+
+export const googleLogin = async (req, res, next) => {
+  const { idToken,role } = req.body;
+  const { email, picture, name, } = await verifyGoogleToken(idToken);
+  let emailExists = await User.findOne({ email });
+  if (!emailExists) {
+    emailExists = await User.create({
+      email,
+      pfp: picture,
+      userName: name,
+      provider: provider.google,
+      isConfirmed:true,
+      role
+    });
+  }
+
+  const accessToken = signToken({
+    payload: { id: emailExists._id },
+    options: { expiresIn: "1h" },
+  });
+  const refreshToken = signToken({
+    payload: { id: emailExists._id },
+    options: { expiresIn: "1y" },
+  });
+
+  if (emailExists.isDeleted === true) {
+    emailExists.isDeleted = false;
+    await emailExists.save();
+  }
 
   return res.status(200).json({
     success: true,
