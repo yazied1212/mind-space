@@ -24,4 +24,6 @@ export const messages = {
   comment: generateMessages("comment"),
   pfp: generateMessages("profile picture"),
   feedback: generateMessages("feedback"),
+  test: generateMessages("test"),
+  questions: generateMessages("questions"),
 };

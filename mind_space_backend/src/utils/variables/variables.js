@@ -9,6 +9,13 @@ export const genders=["male","female"]
 
 export const sessionStatus=["scheduled","ongoing","finished","canceled","didn't show"]
 
+export const testStatus={
+  inProgress:"in_progress",
+  completed:"completed"
+}
+export const testTypes=["stress"]
+export const questionsNumber=10
+
 export const stars=[1,2,3,4,5]
 
 export const defaultPfpUrl =

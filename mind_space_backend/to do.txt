@@ -6,6 +6,7 @@ move defaultPfpUrl and defaultPfpId to .env
 admin apis
 feedback apis
 anonymous user(role:guest)
-test apis
+test test apis
+one id validations schema
 socket io apis(session and support groups)
 endpoints documentation
