@@ -1,5 +1,6 @@
 import { Answer } from "../../db/models/answers.js"
 import { Question } from "../../db/models/questions.js"
+import { User } from "../../db/models/user.js"
 import { AppError, messages } from "../../utils/index.js"
 
 export const addQuestions=async(req,res,next)=>{
@@ -60,13 +61,78 @@ export const deleteQuestion=async(req,res,next)=>{
     const question=await Question.findByIdAndDelete(id)
 
     if(!question){
-        return next(new AppError(messages.questions.notFound))
+        return next(new AppError(messages.question.notFound))
     }
 
     await Answer.deleteMany({questionId:id})
 
     return res.status(200).json({
         success:true,
-        message:messages.questions.deletedSuccessfully
+        message:messages.question.deletedSuccessfully
+    })
+}
+
+
+export const updateQuestion=async(req,res,next)=>{
+
+    const {id}=req.body
+    const {question}=req.body
+
+    const q=await Question.findByIdAndUpdate(id,{
+       question:question 
+    })
+    if(!q){
+        return next(new AppError(messages.question.notFound,404))
+    }
+    
+    
+    return res.status(200).json({
+        success:true,
+        message:messages.question.updatedSuccessfully
+    })
+
+}
+
+export const updateAnswer=async(req,res,next)=>{
+
+    const {id}=req.body
+    const {answer}=req.body
+
+    const q=await Answer.findByIdAndUpdate(id,{
+       answer:answer 
+    })
+    if(!q){
+        return next(new AppError(messages.answer.notFound,404))
+    }
+    
+    
+    return res.status(200).json({
+        success:true,
+        message:messages.answer.updatedSuccessfully
+    })
+
+}
+
+
+export const viewUsers=async(req,res,next)=>{
+
+    let { page, size } = req.query;
+    if (!page) {
+     page = 1;
+    }
+    if (!size) {
+        size = 20;
+     }
+    const skip = (page - 1) * size;
+
+    const users=await User.find({},{userName:1,email:1},{limit:size,slip:skip})
+    
+    if(users.length===0){
+        return next(new AppError(messages.users.notFound,404))
+    }
+
+    return res.status(200).json({
+        success:true,
+        data:users
     })
 }

@@ -3,10 +3,12 @@ better imports structure
 login with google(code is ready)
 create article does't accept jpg but pfp does
 move defaultPfpUrl and defaultPfpId to .env
-admin apis
+ensure therapist are real doctors
+admin apis(banning users)
+reports apis
 feedback apis
 anonymous user(role:guest)
 test test apis
-one id validations schema
+test current admin apis
 socket io apis(session and support groups)
 endpoints documentation

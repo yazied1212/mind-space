@@ -7,10 +7,11 @@ import { isAuthenticate, isAuthorized, isValid } from "../../middlewares/index.j
 
 const router=Router()
 router.use("/:articleId/comment", commentRouter);
-router.use(isAuthenticate, isAuthorized(roles.therapist));
+router.use(isAuthenticate);
 
 router.post(
   "/",
+   isAuthorized(roles.therapist),
   cloudUpload(...fileValidation.images, ...fileValidation.video).array(
     "attachments",
   ),
@@ -19,6 +20,7 @@ router.post(
 );
 router.patch(
   "/like-unlike/:id",
+   isAuthorized(roles.therapist),
   isValid(likeUnlikeSchema),
   asyncHandler(likeUnlike),
 );
@@ -26,23 +28,26 @@ router.get("/", isValid(getArticlesSchema), asyncHandler(getArticles));
 
 router.get(
   "/:id",
+   isAuthorized(roles.therapist),
   isValid(getSpecificArticleSchema),
   asyncHandler(getSpecificArticle),
 );
 
 router.patch(
   "/archive/:id",
+   isAuthorized(roles.therapist),
   isValid(archiveArticleSchema),
   asyncHandler(archiveArticle),
 );
 
 router.patch(
   "/restore/:id",
+   isAuthorized(roles.therapist),
   isValid(restoreArticleSchema),
   asyncHandler(restoreArticle),
 );
 
-router.delete("/:id", isValid(deleteArticleSchema), asyncHandler(deleteArticle));
-router.delete("/undo/:id", isValid(undoArticleSchema), asyncHandler(undoArticle));
+router.delete("/:id", isAuthorized([roles.therapist,roles.admin]),isValid(deleteArticleSchema), asyncHandler(deleteArticle));
+router.delete("/undo/:id", isAuthorized(roles.therapist), isValid(undoArticleSchema), asyncHandler(undoArticle));
 
 export default router

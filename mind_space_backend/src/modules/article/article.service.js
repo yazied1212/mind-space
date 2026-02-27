@@ -160,7 +160,7 @@ export const deleteArticle = async (req, res, next) => {
     return next(new AppError(messages.article.notFound,  404 ));
   }
 
-  if (article.publisher.toString() != req.authUser.id) {
+  if (article.publisher.toString() != req.authUser.id&&req.authUser.role!=="admin") {
     return next(new AppError("not allowed",  401 ));
   }
 

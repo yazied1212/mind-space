@@ -37,3 +37,7 @@ export const generaleField = {
     size: joi.number().required(),
   }),
 };
+
+export const idSchema=joi.object({
+  id:generaleField.id.required
+}).required()

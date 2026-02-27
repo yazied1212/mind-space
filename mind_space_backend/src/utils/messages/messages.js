@@ -26,4 +26,6 @@ export const messages = {
   feedback: generateMessages("feedback"),
   test: generateMessages("test"),
   questions: generateMessages("questions"),
+  question: generateMessages("question"),
+  answer: generateMessages("answer"),
 };

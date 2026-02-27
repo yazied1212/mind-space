@@ -11,6 +11,13 @@ export const addQuestionsSchema=joi.object({
     })).length(4).required()
 }).required()
 
-export const deleteQuestionSchema=joi.object({
-    id:generaleField.id.required()
+
+export const updateQuestionSchema=joi.object({
+    id:generaleField.id.required(),
+    question:joi.string().required()
+}).required()
+
+export const updateAnswerSchema=joi.object({
+    id:generaleField.id.required(),
+    answer:joi.string().required()
 }).required()
