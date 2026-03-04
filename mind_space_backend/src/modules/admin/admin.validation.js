@@ -2,22 +2,25 @@ import joi from "joi";
 import { testTypes } from "../../utils/index.js";
 import { generaleField } from "../../middlewares/isValid.js";
 
-export const addQuestionsSchema=joi.object({
-    question:joi.string().required(),
-    type:joi.string().valid(...testTypes).required(),
-    answers:joi.array().items(joi.object({
-        answer:joi.string().required(),
-        isCorrect:joi.boolean().required()
-    })).length(4).required()
-}).required()
-
+export const addQuestionsSchema = joi.object({
+    questions: joi.array().items({
+        question: joi.string().required(),
+        type: joi.string().valid(...testTypes).required(),
+        answers: joi.array().items(joi.object({
+            answer: joi.string().required(),
+            isCorrect: joi.boolean().required()
+        })).length(4).required()
+    }).required()
+});
 
 export const updateQuestionSchema=joi.object({
     id:generaleField.id.required(),
-    question:joi.string().required()
-}).required()
+    question:joi.string(),
+    type:joi.string().valid(...testTypes)
+}).or('question', 'type').required()
 
 export const updateAnswerSchema=joi.object({
     id:generaleField.id.required(),
-    answer:joi.string().required()
-}).required()
+    answer:joi.string(),
+    isCorrect:joi.boolean()
+}).or('answer', 'isCorrect').required()

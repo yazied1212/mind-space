@@ -6,16 +6,18 @@ import { AppError, messages, testStatus } from "../../utils/index.js"
 export const createTest = async (req,res,next)=>{
 
     const {type}=req.params
-    await Test.create({
+    const test=await Test.create({
         userId:req.authUser._id,
         type
     })
 
     const questions=await Question.find({
         type:type
-    }).populate({
+    })
+    .select("-createdAt -updatedAt")
+    .populate({
         path:"answers",
-        select:"answer"
+        select:"answer -questionId"
     })
     
     if(questions.length===0){
@@ -25,7 +27,10 @@ export const createTest = async (req,res,next)=>{
     return res.status(201).json({
         success:true,
         message:messages.test.createdSuccessfully,
-        data:questions
+        data:[
+            {testId:test._id},
+            questions
+        ]
     })
 
 }

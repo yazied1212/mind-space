@@ -12,6 +12,6 @@ export const testResultSchema=joi.object({
     testId:generaleField.id.required(),
     submittedAnswers:joi.array().items(
         generaleField.id
-    ).length(questionsNumber)
+    )/*.length(questionsNumber)*/
 
-})
+}).required()

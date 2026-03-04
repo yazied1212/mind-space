@@ -1,11 +1,11 @@
 import { model, Schema, Types } from "mongoose"
-import { testStatus } from "../../utils/index.js"
+import { testStatus, testTypes } from "../../utils/index.js"
 
 //schema
 const testSchema=new Schema({
     userId:{type:Types.ObjectId,required:true,ref:"User"},
     score:{type:Number,required:true,default:0},
-    type:{type:Number,required:true},
+    type:{type:String,required:true,enum:testTypes},
     status:{type:String,required:true,enum:Object.values(testStatus),default:testStatus.inProgress},
     completedAt:{type:Date}
 },{

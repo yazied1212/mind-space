@@ -8,7 +8,5 @@ admin apis(banning users)
 reports apis
 feedback apis
 anonymous user(role:guest)
-test test apis
-test current admin apis
+update article
 socket io apis(session and support groups)
-endpoints documentation

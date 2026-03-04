@@ -39,5 +39,5 @@ export const generaleField = {
 };
 
 export const idSchema=joi.object({
-  id:generaleField.id.required
+  id:generaleField.id.required()
 }).required()

@@ -5,7 +5,7 @@ import { AppError, messages } from "../../utils/index.js"
 
 export const addQuestions=async(req,res,next)=>{
 
-    const questionData= Array.isArray(req.body)?req.body:[req.body]
+    const questionData=req.body.questions
 
     const questions=questionData.map(q=>({
         question:q.question,
@@ -13,6 +13,7 @@ export const addQuestions=async(req,res,next)=>{
     }))
 
     const createdQuestions=await Question.insertMany(questions)
+    
 
     const answersToInsert=[]
     for(let i=0;i<createdQuestions.length;i++){
@@ -25,7 +26,7 @@ export const addQuestions=async(req,res,next)=>{
             answersToInsert.push({
                 answer:currentQuestion.answers[j].answer,
                 isCorrect:currentQuestion.answers[j].isCorrect,
-                questionId:questionId[i],
+                questionId:questionId,
             })
         }
 
@@ -43,7 +44,7 @@ export const viewQuestions=async (req,res,next)=>{
 
     const questions=await Question.find().populate(
         {path:"answers",
-        select:"answer"})
+        select:"answer -questionId"})
     if(questions.length===0){
         return next(new AppError(messages.questions.notFound))
     }  
@@ -75,11 +76,12 @@ export const deleteQuestion=async(req,res,next)=>{
 
 export const updateQuestion=async(req,res,next)=>{
 
-    const {id}=req.body
-    const {question}=req.body
+    const {id}=req.params
+    const {question,type}=req.body
 
     const q=await Question.findByIdAndUpdate(id,{
-       question:question 
+       question:question,
+       type:type
     })
     if(!q){
         return next(new AppError(messages.question.notFound,404))
@@ -95,11 +97,12 @@ export const updateQuestion=async(req,res,next)=>{
 
 export const updateAnswer=async(req,res,next)=>{
 
-    const {id}=req.body
-    const {answer}=req.body
+    const {id}=req.params
+    const {answer,isCorrect}=req.body
 
     const q=await Answer.findByIdAndUpdate(id,{
-       answer:answer 
+       answer:answer,
+       isCorrect:isCorrect
     })
     if(!q){
         return next(new AppError(messages.answer.notFound,404))
