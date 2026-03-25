@@ -31,6 +31,31 @@ export const deactivate = async (req, res, next) => {
   });
 };
 
+//(ban user)freeze account
+
+export const freezeACcount =async (req,res,next)=>{
+
+    const {userId} = req.params;
+    
+    if(userId && req.authUser.role !== "admin")
+        return next(new AppError("you are not authorized to freeze this account",403))
+
+
+const updatedUser = await User.findOneAndUpdate(
+  { _id: userId, deletedAt: { $exists: false } },
+  {  
+    freezedAt: Date.now(),
+    freezedBy: req.authUser._id
+  },
+  { new: true }
+);
+return res.status(200).json({
+    success: true,
+    message: "account frozen successfully",
+    data:updateUser ,
+  });
+};
+
 //update user
 export const updateUser = async (req, res, next) => {
   const userExists = req.authUser;
