@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { asyncHandler, cloudUpload, fileValidation, roles } from "../../utils/index.js";
-import { deactivate, profile, resetPfp, updateUser, upPfp } from "./user.service.js";
+import { deactivate,freezeACcount, profile, resetPfp, updateUser, upPfp } from "./user.service.js";
 import { updatedUserSchema } from "./user.validation.js";
 import { isAuthenticate, isAuthorized, isValid } from "../../middlewares/index.js";
 
@@ -11,6 +11,9 @@ router.use(isAuthenticate, isAuthorized([roles.user,roles.therapist]));
 
 router.get("/profile", asyncHandler(profile));
 router.delete("/deactivate", asyncHandler(deactivate));
+router.delete("{/:userId}/freeze-account", asyncHandler(freezeACcount));
+
+
 router.put(
   "/update-user",
   isValid(updatedUserSchema),
