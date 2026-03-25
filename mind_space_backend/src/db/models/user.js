@@ -21,6 +21,11 @@ const userSchema=new Schema({
     twoFA: { type: Boolean, default: false },
     isDeleted: { type: Boolean, default: false },
     deletedAt: Date,
+
+    freezedAt: Date,
+    freezedBy :{type: mongoose.Schema.Types.ObjectId, ref : "User"},
+
+
     isConfirmed:{type:Boolean,default:false},
     provider: {
       type: String,
