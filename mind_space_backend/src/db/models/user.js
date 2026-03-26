@@ -22,8 +22,8 @@ const userSchema=new Schema({
     isDeleted: { type: Boolean, default: false },
     deletedAt: Date,
 
-    freezedAt: Date,
-    freezedBy :{type: mongoose.Schema.Types.ObjectId, ref : "User"},
+    bannedAt: Date,
+    bannedBy :{type: mongoose.Schema.Types.ObjectId, ref : "User"},
 
 
     isConfirmed:{type:Boolean,default:false},
