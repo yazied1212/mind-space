@@ -92,6 +92,36 @@ export const BanAccount = async (req, res, next) => {
   });
 };
 
+export const UnBanAccount = async (req, res, next) => {
+  const { userId } = req.params;
+  if (req.authUser.role !== "admin") {
+    return next(
+      new AppError("you are not authorized to unban this account", 403)
+    );
+  }
+
+  const updatedUser = await User.findOneAndUpdate(
+    { _id: userId, deletedAt: { $exists: false } },
+    {
+      bannedAt: null,
+      bannedUntil: null,
+      bannedBy: null,
+    },
+    { new: true }
+  );
+
+  if (!updatedUser) {
+    return next(new AppError("user not found", 404));
+  }
+
+  return res.status(200).json({
+    success: true,
+    message: "Account unbanned successfully",
+    data: updatedUser,
+  });
+};
+
+
 export const deleteQuestion=async(req,res,next)=>{
 
     const{id}=req.params
