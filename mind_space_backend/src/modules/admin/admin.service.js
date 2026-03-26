@@ -59,6 +59,7 @@ export const viewQuestions=async (req,res,next)=>{
 
 export const BanAccount = async (req, res, next) => {
   const { userId } = req.params;
+  const { duration } = req.body;
 
   if (req.authUser.role !== "admin") {
     return next(
@@ -66,10 +67,15 @@ export const BanAccount = async (req, res, next) => {
     );
   }
 
+    const bannedUntil = new Date(
+    Date.now() + duration * 24 * 60 * 60 * 1000
+  );
+
   const updatedUser = await User.findOneAndUpdate(
     { _id: userId, deletedAt: { $exists: false } },
     {
       bannedAt: Date.now(),
+      bannedUntil,
       bannedBy: req.authUser._id,
     },
     { new: true }
@@ -81,7 +87,7 @@ export const BanAccount = async (req, res, next) => {
 
   return res.status(200).json({
     success: true,
-    message: "account banned successfully",
+    message: `account banned for ${duration} days`,
     data: updatedUser,
   });
 };

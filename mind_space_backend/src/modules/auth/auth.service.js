@@ -62,27 +62,39 @@ export const activateAccount = async (req, res, next) => {
 export const login = async (req, res, next) => {
   const { email, password } = req.body;
 
-  const emailExists = await User.findOne({ email: email });
-  if (!emailExists) {
-    return next(new AppError(messages.user.invalidEorP,  401 ));
+  const user = await User.findOne({ email });
+  if (!user) {
+    return next(new AppError(messages.user.invalidEorP, 401));
   }
 
-  const match = bcrypt.compareSync(password, emailExists.password);
+
+  if (user.bannedUntil && user.bannedUntil < Date.now()) {
+    user.bannedAt = null;
+    user.bannedUntil = null;
+    await user.save();
+  }
+
+  if (user.bannedUntil && user.bannedUntil > Date.now()) {
+    return next(new AppError("your account is temporarily banned", 403));
+  }
+  
+
+  const match = bcrypt.compareSync(password, user.password);
   if (!match) {
-    return next(new AppError(messages.user.invalidEorP,  401 ));
+    return next(new AppError(messages.user.invalidEorP, 401));
   }
 
-  if(emailExists.isConfirmed===false){
-        return next(new AppError("please activate your account",401))
-    }
-
-  if (emailExists.isDeleted === true) {
-    emailExists.isDeleted = false;
-    await emailExists.save();
+  if (user.isConfirmed === false) {
+    return next(new AppError("please activate your account", 401));
   }
 
-  if (emailExists.twoFA === true) {
-    await generateAndSendOtp(emailExists.email);
+  if (user.isDeleted === true) {
+    user.isDeleted = false;
+    await user.save();
+  }
+
+  if (user.twoFA === true) {
+    await generateAndSendOtp(user.email);
     return res.status(201).json({
       success: true,
       message: messages.otp.createdSuccessfully,
@@ -90,22 +102,21 @@ export const login = async (req, res, next) => {
   }
 
   const accessToken = signToken({
-    payload: { id: emailExists._id },
+    payload: { id: user._id },
     options: { expiresIn: "1h" },
   });
   const refreshToken = signToken({
-    payload: { id: emailExists._id },
+    payload: { id: user._id },
     options: { expiresIn: "1y" },
   });
 
   return res.status(200).json({
     success: true,
     message: messages.user.login,
-    accessToken: accessToken,
-    refreshToken: refreshToken,
+    accessToken,
+    refreshToken,
   });
 };
-
 
 export const refreshToken = async (req, res, next) => {
   const { refreshToken } = req.body;
