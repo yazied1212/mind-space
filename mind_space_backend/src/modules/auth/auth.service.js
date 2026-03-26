@@ -260,7 +260,9 @@ export const Disable2Fa=async(req,res,next)=>{
 
 }
 
-//login with google
+
+
+// login with google
 const verifyGoogleToken = async (idToken) => {
   const client = new OAuth2Client();
   const ticket = await client.verifyIdToken({
@@ -272,38 +274,50 @@ const verifyGoogleToken = async (idToken) => {
 };
 
 export const googleLogin = async (req, res, next) => {
-  const { idToken,role } = req.body;
-  const { email, picture, name, } = await verifyGoogleToken(idToken);
-  let emailExists = await User.findOne({ email });
-  if (!emailExists) {
-    emailExists = await User.create({
+  const { idToken, role } = req.body;
+  const { email, picture, name } = await verifyGoogleToken(idToken);
+
+  let user = await User.findOne({ email });
+
+  if (!user) {
+    user = await User.create({
       email,
       pfp: picture,
       userName: name,
       provider: provider.google,
-      isConfirmed:true,
-      role
+      isConfirmed: true,
+      role,
     });
   }
 
+  if (user.bannedUntil && user.bannedUntil < Date.now()) {
+    user.bannedAt = null;
+    user.bannedUntil = null;
+    await user.save();
+  }
+
+  if (user.bannedUntil && user.bannedUntil > Date.now()) {
+    return next(new AppError("your account is temporarily banned", 403));
+  }
+
+  if (user.isDeleted === true) {
+    user.isDeleted = false;
+    await user.save();
+  }
+
   const accessToken = signToken({
-    payload: { id: emailExists._id },
+    payload: { id: user._id },
     options: { expiresIn: "1h" },
   });
   const refreshToken = signToken({
-    payload: { id: emailExists._id },
+    payload: { id: user._id },
     options: { expiresIn: "1y" },
   });
-
-  if (emailExists.isDeleted === true) {
-    emailExists.isDeleted = false;
-    await emailExists.save();
-  }
 
   return res.status(200).json({
     success: true,
     message: messages.user.login,
-    accessToken: accessToken,
-    refreshToken: refreshToken,
+    accessToken,
+    refreshToken,
   });
 };
