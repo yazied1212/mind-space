@@ -25,7 +25,7 @@ export const addQuestions=async(req,res,next)=>{
 
             answersToInsert.push({
                 answer:currentQuestion.answers[j].answer,
-                isCorrect:currentQuestion.answers[j].isCorrect,
+                points:currentQuestion.answers[j].points,
                 questionId:questionId,
             })
         }
@@ -98,11 +98,11 @@ export const updateQuestion=async(req,res,next)=>{
 export const updateAnswer=async(req,res,next)=>{
 
     const {id}=req.params
-    const {answer,isCorrect}=req.body
+    const {answer,points}=req.body
 
     const q=await Answer.findByIdAndUpdate(id,{
        answer:answer,
-       isCorrect:isCorrect
+       points:points
     })
     if(!q){
         return next(new AppError(messages.answer.notFound,404))
