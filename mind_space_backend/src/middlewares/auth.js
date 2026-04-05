@@ -25,11 +25,15 @@ export const isAuthenticate = async (req, res, next) => {
     if (userExists.isDeleted === true) {
       return next(new AppError("account deactivated please login first"));
     }
+    
+    if (userExists.bannedAt === true) {
+      return next(new AppError("account has been banned "));
+    }
 
     if (userExists.deletedAt && userExists.deletedAt.getTime() > iat * 1000) {
       return next(new AppError("token is destroyed",   400 ));
     }
-
+ 
     req.authUser = userExists;
     return next();
   } catch (error) {

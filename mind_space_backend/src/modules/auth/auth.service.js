@@ -57,8 +57,6 @@ export const activateAccount = async (req, res, next) => {
   });
 };
 
-
-
 export const login = async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -117,6 +115,8 @@ export const login = async (req, res, next) => {
     refreshToken,
   });
 };
+
+
 
 export const refreshToken = async (req, res, next) => {
   const { refreshToken } = req.body;

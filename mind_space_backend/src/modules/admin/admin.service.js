@@ -58,7 +58,7 @@ export const viewQuestions=async (req,res,next)=>{
 // (ban user) ban account
 
 export const BanAccount = async (req, res, next) => {
-  const { userId } = req.params;
+  const { id } = req.params;
   const { duration } = req.body;
 
   if (req.authUser.role !== "admin") {
@@ -72,7 +72,7 @@ export const BanAccount = async (req, res, next) => {
   );
 
   const updatedUser = await User.findOneAndUpdate(
-    { _id: userId, deletedAt: { $exists: false } },
+    { _id: id, deletedAt: { $exists: false } },
     {
       bannedAt: Date.now(),
       bannedUntil,
@@ -93,7 +93,7 @@ export const BanAccount = async (req, res, next) => {
 };
 
 export const UnBanAccount = async (req, res, next) => {
-  const { userId } = req.params;
+  const { id } = req.params;
   if (req.authUser.role !== "admin") {
     return next(
       new AppError("you are not authorized to unban this account", 403)
@@ -101,14 +101,16 @@ export const UnBanAccount = async (req, res, next) => {
   }
 
   const updatedUser = await User.findOneAndUpdate(
-    { _id: userId, deletedAt: { $exists: false } },
+    { _id: id, deletedAt: { $exists: false } },
     {
-      bannedAt: null,
-      bannedUntil: null,
-      bannedBy: null,
+    $unset: {
+      bannedAt: 1,
+      bannedUntil: 1,
+      bannedBy: 1,
     },
-    { new: true }
-  );
+  },
+  { new: true }
+);
 
   if (!updatedUser) {
     return next(new AppError("user not found", 404));

@@ -1,4 +1,4 @@
-import { model, Schema, Types } from "mongoose"
+import mongoose, { model, Schema, Types } from "mongoose"
 import { defaultPfpId, defaultPfpUrl, genders, provider, roles } from "../../utils/index.js"
 import bcrypt from "bcrypt"
 

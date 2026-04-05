@@ -15,8 +15,9 @@ router.post("/login", isValid(loginSchema), asyncHandler(login));
 router.post(
   "/refresh-token",
   isValid(refreshTokenSchema),
-  asyncHandler(refreshToken),
+  asyncHandler(refreshToken), 
 );
+
 router.post("/send-otp", isValid(otpSchema), asyncHandler(sendOTP));
 router.post(
   "/forget-password-verify-otp",
@@ -55,6 +56,6 @@ router.post(
 
 router.post("/google-login", isValid(google), asyncHandler(googleLogin));
 
-
+ 
 
 export default router
