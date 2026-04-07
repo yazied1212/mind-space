@@ -1,12 +1,56 @@
-secure forgot password and 2fa chain
-better imports structure
-login with google(code is ready)
-create article does't accept jpg but pfp does
-move defaultPfpUrl and defaultPfpId to .env
-ensure therapist are real doctors
-admin apis(banning users)
-reports apis
-feedback apis
-anonymous user(role:guest)
+@NEW APIS
+
+user report a therapist or another user
+therapist reports a user for an inappropriate feedback(سبو بامو او كدا)
+admin views the reports
+
+admin ban user
+admin unban user
+
+user gives feedback about his therapist
+user deletes his feedback
+user updates his feedback
+
+admin views the feedbacks on a therapist
+admin deletes a feedback on a therapist
+
 update article
+
+user sees available therapists
+
+filter for +18 content
+
+life coach role
+
+user book a session
+therapist confirm the session
+user cancel the session
+user or therapist delay the session
+
+create a group
+delete the group
+update the group
+join the group
+leave the group
+
+
 socket io apis(session and support groups)
+
+
+@EDIT CURRENT APIS
+
+secure forgot password and 2fa chain
+login with google(code is ready)
+ensure therapists are real doctors
+
+
+@حبشتكنات
+
+better imports structure
+move defaultPfpUrl and defaultPfpId to .env
+anonymous user(role:guest)
+create article does't accept jpg but pfp does
+rate limit
+
+
+

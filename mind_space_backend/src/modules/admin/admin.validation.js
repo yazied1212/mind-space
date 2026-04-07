@@ -8,8 +8,8 @@ export const addQuestionsSchema = joi.object({
         type: joi.string().valid(...testTypes).required(),
         answers: joi.array().items(joi.object({
             answer: joi.string().required(),
-            isCorrect: joi.boolean().required()
-        })).length(4).required()
+            points: joi.number().required()
+        })).length(5).required()
     }).required()
 });
 
@@ -22,5 +22,5 @@ export const updateQuestionSchema=joi.object({
 export const updateAnswerSchema=joi.object({
     id:generaleField.id.required(),
     answer:joi.string(),
-    isCorrect:joi.boolean()
-}).or('answer', 'isCorrect').required()
+    points:joi.number()
+}).or('answer', 'points').required()

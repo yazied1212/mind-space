@@ -15,6 +15,7 @@ export const testStatus={
 }
 export const testTypes=["stress"]
 export const questionsNumber=10
+export const points=[5,10,15,20,25]
 
 export const stars=[1,2,3,4,5]
 
