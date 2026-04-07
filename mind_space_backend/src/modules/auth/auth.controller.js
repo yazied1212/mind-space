@@ -11,7 +11,7 @@ import { isAuthenticate, isAuthorized, isValid } from "../../middlewares/index.j
 const router=Router()
 router.post("/sign-up",isValid(signUpSchema),asyncHandler(signUp))
 router.get("/activate-account/:token", asyncHandler(activateAccount));
-router.post("/login", isValid(loginSchema), asyncHandler(login));
+router.post("/login",isValid(loginSchema), asyncHandler(login));
 router.post(
   "/refresh-token",
   isValid(refreshTokenSchema),

@@ -65,10 +65,10 @@ export const login = async (req, res, next) => {
     return next(new AppError(messages.user.invalidEorP, 401));
   }
 
-
   if (user.bannedUntil && user.bannedUntil < Date.now()) {
-    user.bannedAt = null;
-    user.bannedUntil = null;
+    user.bannedAt = undefined;
+    user.bannedUntil = undefined;
+    user.bannedBy = undefined;
     await user.save();
   }
 
