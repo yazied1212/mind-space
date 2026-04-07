@@ -1,5 +1,5 @@
 import { model, Schema, Types } from "mongoose"
-import { defaultPfpId, defaultPfpUrl, genders, provider, roles } from "../../utils/index.js"
+import { defaultPfpId, defaultPfpUrl, genders, provider, roles, specialties } from "../../utils/index.js"
 import bcrypt from "bcrypt"
 
 //schema
@@ -18,10 +18,14 @@ const userSchema=new Schema({
         secure_url: { type: String, default: defaultPfpUrl },
       public_id: { type: String, default: defaultPfpId },
     },
+    specialty:{type:String,enum:specialties,required:function(){
+      return this.role ==roles.therapist?true:false
+    }},
     twoFA: { type: Boolean, default: false },
     isDeleted: { type: Boolean, default: false },
     deletedAt: Date,
     isConfirmed:{type:Boolean,default:false},
+    isVerified:{type:Boolean,default:false},
     provider: {
       type: String,
       enum: [provider.google, provider.system],

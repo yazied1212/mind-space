@@ -2,12 +2,12 @@ import { OAuth2Client } from "google-auth-library";
 import { OTP } from "../../db/models/otp.js";
 import { User } from "../../db/models/user.js";
 import { generateAndSendOtp } from "../../middlewares/index.js";
-import { AppError, messages, provider, sendEmail, signToken, verifyToken } from "../../utils/index.js";
+import { AppError, messages, provider, roles, sendEmail, signToken, verifyToken } from "../../utils/index.js";
 import bcrypt from "bcrypt"
 
 export const signUp = async (req, res, next) => {
 
-  const { email, userName, password, gender, role ,age} = req.body;
+  const { email, userName, password, gender, role ,age,specialty} = req.body;
 
   const createdUser = await User.create({
     userName,
@@ -15,7 +15,8 @@ export const signUp = async (req, res, next) => {
     password,
     gender,
     role,
-    age
+    age,
+    specialty
   });
   
 
@@ -75,6 +76,10 @@ export const login = async (req, res, next) => {
   if(emailExists.isConfirmed===false){
         return next(new AppError("please activate your account",401))
     }
+
+  if(emailExists.role==roles.therapist&&emailExists.isVerified==false){
+    return next(new AppError("please wait for CV verification"))
+  }   
 
   if (emailExists.isDeleted === true) {
     emailExists.isDeleted = false;

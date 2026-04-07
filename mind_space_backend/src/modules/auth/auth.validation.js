@@ -1,5 +1,5 @@
 import joi from "joi";
-import { genders, roles } from "../../utils/index.js";
+import { genders, roles, specialties } from "../../utils/index.js";
 
 
 //register
@@ -14,7 +14,8 @@ export const signUpSchema = joi
       .valid(...genders)
       .required(),
     role:joi.string().valid(...Object.values(roles)).required(),
-    age:joi.number().min(18).required()
+    age:joi.number().min(18).required(),
+    specialty:joi.string().valid(...specialties).required()
   })
   .required();
 
