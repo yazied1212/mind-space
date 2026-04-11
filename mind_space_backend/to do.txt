@@ -7,11 +7,6 @@ admin views the reports
 admin ban user
 admin unban user
 
-user deletes his feedback
-user updates his feedback
-
-admin views the feedbacks on a therapist
-admin deletes a feedback on a therapist
 
 update article
 
