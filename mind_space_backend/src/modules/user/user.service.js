@@ -31,6 +31,8 @@ export const deactivate = async (req, res, next) => {
   });
 };
 
+
+
 //update user
 export const updateUser = async (req, res, next) => {
   const userExists = req.authUser;

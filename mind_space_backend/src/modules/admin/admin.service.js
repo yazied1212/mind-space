@@ -55,6 +55,74 @@ export const viewQuestions=async (req,res,next)=>{
     })
 }
 
+// (ban user) ban account
+
+export const BanAccount = async (req, res, next) => {
+  const { id } = req.params;
+  const { duration } = req.body;
+
+  if (req.authUser.role !== "admin") {
+    return next(
+      new AppError("you are not authorized to ban this account", 403)
+    );
+  }
+
+    const bannedUntil = new Date(
+    Date.now() + duration * 24 * 60 * 60 * 1000
+  );
+
+  const updatedUser = await User.findOneAndUpdate(
+    { _id: id, deletedAt: { $exists: false } },
+    {
+      bannedAt: Date.now(),
+      bannedUntil,
+      bannedBy: req.authUser._id,
+    },
+    { new: true }
+  );
+
+  if (!updatedUser) {
+    return next(new AppError("user not found", 404));
+  }
+
+  return res.status(200).json({
+    success: true,
+    message: `account banned for ${duration} days`,
+    data: updatedUser,
+  });
+};
+
+export const UnBanAccount = async (req, res, next) => {
+  const { id } = req.params;
+  if (req.authUser.role !== "admin") {
+    return next(
+      new AppError("you are not authorized to unban this account", 403)
+    );
+  }
+
+  const updatedUser = await User.findOneAndUpdate(
+    { _id: id, deletedAt: { $exists: false } },
+    {
+    $unset: {
+      bannedAt: 1,
+      bannedUntil: 1,
+      bannedBy: 1,
+    },
+  },
+  { new: true }
+);
+
+  if (!updatedUser) {
+    return next(new AppError("user not found", 404));
+  }
+
+  return res.status(200).json({
+    success: true,
+    message: "Account unbanned successfully",
+    data: updatedUser,
+  });
+};
+
 
 export const deleteQuestion=async(req,res,next)=>{
 

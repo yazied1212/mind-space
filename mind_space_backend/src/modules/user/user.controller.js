@@ -11,6 +11,8 @@ router.use(isAuthenticate, isAuthorized([roles.user,roles.therapist]));
 
 router.get("/profile", asyncHandler(profile));
 router.delete("/deactivate", asyncHandler(deactivate));
+
+
 router.put(
   "/update-user",
   isValid(updatedUserSchema),

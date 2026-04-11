@@ -1,4 +1,4 @@
-import { model, Schema, Types } from "mongoose"
+import mongoose, { model, Schema, Types } from "mongoose"
 import { defaultPfpId, defaultPfpUrl, genders, provider, roles } from "../../utils/index.js"
 import bcrypt from "bcrypt"
 
@@ -21,6 +21,12 @@ const userSchema=new Schema({
     twoFA: { type: Boolean, default: false },
     isDeleted: { type: Boolean, default: false },
     deletedAt: Date,
+
+    bannedUntil: Date,
+    bannedAt: Date,
+    bannedBy :{type: mongoose.Schema.Types.ObjectId, ref : "User"},
+
+
     isConfirmed:{type:Boolean,default:false},
     provider: {
       type: String,

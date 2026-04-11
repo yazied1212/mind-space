@@ -26,6 +26,7 @@ export const isValid = (schema) => {
 //general field
 export const generaleField = {
   id: joi.string().hex().length(24),
+  duration: joi.number().positive(),
   attachments: joi.object({
     fieldname: joi.string().required(),
     originalname: joi.string().required(),
@@ -35,9 +36,20 @@ export const generaleField = {
     filename: joi.string().required(),
     path: joi.string().required(),
     size: joi.number().required(),
+    
   }),
 };
 
 export const idSchema=joi.object({
-  id:generaleField.id.required()
+  id:generaleField.id.required(),
+}).required()
+
+export const BanAccountSchema=joi.object({
+  id:generaleField.id.required(),
+  duration:generaleField.duration.required(),
+}).required()
+
+
+export const UnBanAccountSchema=joi.object({
+  id:generaleField.id.required(),
 }).required()
