@@ -7,7 +7,6 @@ admin views the reports
 admin ban user
 admin unban user
 
-user gives feedback about his therapist
 user deletes his feedback
 user updates his feedback
 
@@ -20,7 +19,7 @@ user sees available therapists
 
 filter for +18 content
 
-life coach role
+add (life coach role , relationship coach , career couch , performance coach , therapist)
 
 user book a session
 therapist confirm the session
@@ -42,6 +41,7 @@ socket io apis(session and support groups)
 secure forgot password and 2fa chain
 login with google(code is ready)
 ensure therapists are real doctors
+edit feedback api for gitting the id
 
 
 @حبشتكنات
