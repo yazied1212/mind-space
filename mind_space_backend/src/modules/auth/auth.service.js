@@ -4,6 +4,8 @@ import { User } from "../../db/models/user.js";
 import { generateAndSendOtp } from "../../middlewares/index.js";
 import { AppError, messages, provider, sendEmail, signToken, verifyToken } from "../../utils/index.js";
 import bcrypt from "bcrypt"
+import { getNewLoginCredentials, logoutEnum } from "../../utils/token/getNewCredentials.js";
+import { TokenModel } from "../../db/models/token.js";
 
 export const signUp = async (req, res, next) => {
 
@@ -99,25 +101,42 @@ export const login = async (req, res, next) => {
     });
   }
 
-  const accessToken = signToken({
-    payload: { id: user._id },
-    options: { expiresIn: "1h" },
-  });
-  const refreshToken = signToken({
-    payload: { id: user._id },
-    options: { expiresIn: "1y" },
-  });
+ const NewCredentials = await getNewLoginCredentials(user);
 
   return res.status(200).json({
     success: true,
     message: messages.user.login,
-    accessToken,
-    refreshToken,
+    data: NewCredentials,
   });
 };
 
+export const logout = async (req, res, next) => {
+  const { flag } = req.body;
 
+  switch (flag) {
+    case logoutEnum.logoutFromAllDevices:
+      await User.updateOne(
+        { _id: req.authUser._id },
+        {
+          changeCredentialsTime: Date.now(),
+        }
+      );
+      break;
 
+    default:
+      await TokenModel.create({
+        jti: req.decoded.jti,
+        userId: req.authUser._id,
+        expiresAt: new Date(req.decoded.exp * 1000),
+      });
+      break;
+  }
+
+  return res.status(200).json({
+    success: true,
+    message: messages.user.logout,
+  });
+};
 export const refreshToken = async (req, res, next) => {
   const { refreshToken } = req.body;
   const { error, id, iat } = verifyToken(refreshToken);
@@ -305,19 +324,11 @@ export const googleLogin = async (req, res, next) => {
     await user.save();
   }
 
-  const accessToken = signToken({
-    payload: { id: user._id },
-    options: { expiresIn: "1h" },
-  });
-  const refreshToken = signToken({
-    payload: { id: user._id },
-    options: { expiresIn: "1y" },
-  });
+ const NewCredentials = await getNewLoginCredentials(user);
 
   return res.status(200).json({
     success: true,
     message: messages.user.login,
-    accessToken,
-    refreshToken,
+    data: NewCredentials,
   });
 };

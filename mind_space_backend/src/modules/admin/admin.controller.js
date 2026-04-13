@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { BanAccountSchema, idSchema, isAuthenticate, isAuthorized, isValid, UnBanAccountSchema } from "../../middlewares/index.js";
+import {  idSchema, isAuthenticate, isAuthorized, isValid,  } from "../../middlewares/index.js";
 import { asyncHandler, roles } from "../../utils/index.js";
 import { addQuestions, deleteQuestion,BanAccount, updateAnswer, updateQuestion, viewQuestions, viewUsers, UnBanAccount } from "./admin.service.js";
-import { addQuestionsSchema, updateAnswerSchema, updateQuestionSchema, } from "./admin.validation.js";
+import { addQuestionsSchema, BanAccountSchema, UnBanAccountSchema, updateAnswerSchema, updateQuestionSchema, } from "./admin.validation.js";
 
 const router =Router()
 router.use(isAuthenticate,isAuthorized(roles.admin))

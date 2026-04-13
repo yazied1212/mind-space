@@ -1,3 +1,4 @@
+
 const generateMessages = (entity) => ({
   notFound: `${entity} not found`,
   alreadyExists: `${entity} already exists`,
@@ -15,6 +16,7 @@ export const messages = {
     ...generateMessages("user"),
     invalidEorP: "invalid email or password",
     login: "login successfully",
+    logout: "logout successfully",
   },
   users: generateMessages("users"),
   message: generateMessages("message"),

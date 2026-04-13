@@ -24,3 +24,15 @@ export const updateAnswerSchema=joi.object({
     answer:joi.string(),
     points:joi.number()
 }).or('answer', 'points').required()
+
+
+
+export const BanAccountSchema=joi.object({
+  id:generaleField.id.required(),
+  duration:generaleField.duration.required(),
+}).required()
+
+
+export const UnBanAccountSchema=joi.object({
+  id:generaleField.id.required(),
+}).required()

@@ -10,3 +10,6 @@ export const updatedUserSchema = joi
     gender: joi.string().valid(...genders),
   })
   .required();
+
+
+  

@@ -25,7 +25,7 @@ const userSchema=new Schema({
     bannedUntil: Date,
     bannedAt: Date,
     bannedBy :{type: mongoose.Schema.Types.ObjectId, ref : "User"},
-
+    changeCredentialsTime : Date,
 
     isConfirmed:{type:Boolean,default:false},
     provider: {

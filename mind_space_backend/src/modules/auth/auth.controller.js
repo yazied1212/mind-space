@@ -1,9 +1,10 @@
 import { Router } from "express";
 import { asyncHandler, roles } from "../../utils/index.js";
 import {  activateAccount, Disable2Fa, enable2FA, forgetPassword, googleLogin,
-   login, refreshToken, sendOTP, signUp, twoFaLogin, twoFaSendOtp, verifyOtp } from "./auth.service.js";
+   login, logout, refreshToken, sendOTP, signUp, twoFaLogin, twoFaSendOtp, verifyOtp } from "./auth.service.js";
 
 import { disable2Fa, enable2FaSchema, forgetPasswordSchema, google, loginSchema,
+   logoutValidation,
    otpSchema, refreshTokenSchema, signUpSchema, twoFaLoginSchema, verifyOtpSchema } from "./auth.validation.js";
 import { isAuthenticate, isAuthorized, isValid } from "../../middlewares/index.js";
 
@@ -12,6 +13,7 @@ const router=Router()
 router.post("/sign-up",isValid(signUpSchema),asyncHandler(signUp))
 router.get("/activate-account/:token", asyncHandler(activateAccount));
 router.post("/login",isValid(loginSchema), asyncHandler(login));
+router.post("/logout", isValid(logoutValidation),isAuthenticate,  asyncHandler(logout));
 router.post(
   "/refresh-token",
   isValid(refreshTokenSchema),

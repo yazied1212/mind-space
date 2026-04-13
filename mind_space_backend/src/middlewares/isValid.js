@@ -44,12 +44,3 @@ export const idSchema=joi.object({
   id:generaleField.id.required(),
 }).required()
 
-export const BanAccountSchema=joi.object({
-  id:generaleField.id.required(),
-  duration:generaleField.duration.required(),
-}).required()
-
-
-export const UnBanAccountSchema=joi.object({
-  id:generaleField.id.required(),
-}).required()
