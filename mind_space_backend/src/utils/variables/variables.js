@@ -7,7 +7,7 @@ export const roles={
 
 export const genders=["male","female"]
 
-export const sessionStatus=["scheduled","ongoing","finished","canceled","didn't show"]
+export const sessionStatus=["pending","scheduled","ongoing","finished","canceled","didn't show"]
 
 export const testStatus={
   inProgress:"in_progress",
