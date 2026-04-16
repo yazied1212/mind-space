@@ -1,7 +1,7 @@
 import { Answer } from "../../db/models/answers.js"
 import { Question } from "../../db/models/questions.js"
 import { User } from "../../db/models/user.js"
-import { AppError, messages } from "../../utils/index.js"
+import { AppError, cvStatuses, messages, sendEmail } from "../../utils/index.js"
 
 export const addQuestions=async(req,res,next)=>{
 
@@ -54,6 +54,74 @@ export const viewQuestions=async (req,res,next)=>{
         data:questions
     })
 }
+
+// (ban user) ban account
+
+export const BanAccount = async (req, res, next) => {
+  const { id } = req.params;
+  const { duration } = req.body;
+
+  if (req.authUser.role !== "admin") {
+    return next(
+      new AppError("you are not authorized to ban this account", 403)
+    );
+  }
+
+    const bannedUntil = new Date(
+    Date.now() + duration * 24 * 60 * 60 * 1000
+  );
+
+  const updatedUser = await User.findOneAndUpdate(
+    { _id: id, deletedAt: { $exists: false } },
+    {
+      bannedAt: Date.now(),
+      bannedUntil,
+      bannedBy: req.authUser._id,
+    },
+    { new: true }
+  );
+
+  if (!updatedUser) {
+    return next(new AppError("user not found", 404));
+  }
+
+  return res.status(200).json({
+    success: true,
+    message: `account banned for ${duration} days`,
+    data: updatedUser,
+  });
+};
+
+export const UnBanAccount = async (req, res, next) => {
+  const { id } = req.params;
+  if (req.authUser.role !== "admin") {
+    return next(
+      new AppError("you are not authorized to unban this account", 403)
+    );
+  }
+
+  const updatedUser = await User.findOneAndUpdate(
+    { _id: id, deletedAt: { $exists: false } },
+    {
+    $unset: {
+      bannedAt: 1,
+      bannedUntil: 1,
+      bannedBy: 1,
+    },
+  },
+  { new: true }
+);
+
+  if (!updatedUser) {
+    return next(new AppError("user not found", 404));
+  }
+
+  return res.status(200).json({
+    success: true,
+    message: "Account unbanned successfully",
+    data: updatedUser,
+  });
+};
 
 
 export const deleteQuestion=async(req,res,next)=>{
@@ -138,4 +206,57 @@ export const viewUsers=async(req,res,next)=>{
         success:true,
         data:users
     })
+}
+
+
+export const viewCVs= async(req,res,next)=>{
+
+  const data= await User.find({
+    cv:{$exists:true},
+    cvStatus:cvStatuses.pending
+  },{cv:1})
+
+  if(data.length===0){
+    return next(new AppError("no cv found",404))
+  }
+
+  return res.status(200).json({
+    success:true,
+    data:data
+  })
+
+}
+
+export const judgeCV= async(req,res,next)=>{
+
+  const{id}=req.params
+  const{decision}=req.body
+
+  const user=await User.findByIdAndUpdate(id,{
+    cvStatus:decision
+  })
+
+  if(!user){
+    return next(new AppError(messages.user.notFound))
+  }
+  
+
+    const isSent=await sendEmail({
+            to:user.email,
+            subject:"cv",
+            html:`<p>your cv got ${decision}</a></p>`
+        })
+        if(!isSent){
+            return next(new AppError("fail to send email please try again"))
+        }
+  
+
+  return res.status(200).json({
+    success:true,
+    message:`the cv is ${decision}`
+  })
+
+
+  
+
 }

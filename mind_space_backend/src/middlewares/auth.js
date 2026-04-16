@@ -17,20 +17,25 @@ export const isAuthenticate = async (req, res, next) => {
       return next(new AppError(error.message));
     }
 
-    const userExists = await User.findById(id);
-    if (!userExists) {
+    const user = await User.findById(id);
+    if (!user) {
       return next(new AppError(messages.user.notFound,  404 ));
     }
 
-    if (userExists.isDeleted === true) {
+    if (user.isDeleted === true) {
       return next(new AppError("account deactivated please login first"));
     }
+    
+    if (user.bannedUntil && user.bannedUntil > Date.now()) {
+        return next(new AppError("your account is temporarily banned", 403));
+      }
+      
 
-    if (userExists.deletedAt && userExists.deletedAt.getTime() > iat * 1000) {
+    if (user.deletedAt && user.deletedAt.getTime() > iat * 1000) {
       return next(new AppError("token is destroyed",   400 ));
     }
-
-    req.authUser = userExists;
+ 
+    req.authUser = user;
     return next();
   } catch (error) {
     return next(new AppError(error.message));

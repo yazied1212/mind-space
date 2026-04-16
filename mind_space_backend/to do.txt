@@ -4,9 +4,6 @@ user report a therapist or another user
 therapist reports a user for an inappropriate feedback(سبو بامو او كدا)
 admin views the reports
 
-admin ban user
-admin unban user
-
 user gives feedback about his therapist
 user deletes his feedback
 user updates his feedback
@@ -41,7 +38,6 @@ socket io apis(session and support groups)
 
 secure forgot password and 2fa chain
 login with google(code is ready)
-ensure therapists are real doctors
 
 
 @حبشتكنات

@@ -3,6 +3,7 @@ import multer, { diskStorage } from "multer";
 export const fileValidation = {
   images: ["image/png", "image/jpeg", "image/jpg"],
   video: ["video/mp4", "video/mpeg"],
+  pdf:["application/pdf"]
 };
 
 export const cloudUpload = (allowedTypes) => {

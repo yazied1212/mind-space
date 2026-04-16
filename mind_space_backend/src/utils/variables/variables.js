@@ -9,6 +9,12 @@ export const genders=["male","female"]
 
 export const specialties=["life coach","relationship coach","career coach","therapist","performance and skill coach"]
 
+export const cvStatuses={
+  pending:"pending",
+  accepted:"accepted",
+  rejected:"rejected"
+}
+
 export const sessionStatus=["scheduled","ongoing","finished","canceled","didn't show"]
 
 export const testStatus={

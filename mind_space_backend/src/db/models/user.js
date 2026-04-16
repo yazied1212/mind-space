@@ -1,5 +1,5 @@
-import { model, Schema, Types } from "mongoose"
-import { defaultPfpId, defaultPfpUrl, genders, provider, roles, specialties } from "../../utils/index.js"
+import { cvStatuses, defaultPfpId, defaultPfpUrl, genders, provider, roles, specialties } from "../../utils/index.js"
+import mongoose, { model, Schema, Types } from "mongoose"
 import bcrypt from "bcrypt"
 
 //schema
@@ -18,14 +18,24 @@ const userSchema=new Schema({
         secure_url: { type: String, default: defaultPfpUrl },
       public_id: { type: String, default: defaultPfpId },
     },
+    cv:{
+      secure_url: { type: String},
+      public_id: { type: String,},
+    },
+    cvStatus:{type:String,default:cvStatuses.pending,enum:Object.values(cvStatuses)},
     specialty:{type:String,enum:specialties,required:function(){
       return this.role ==roles.therapist?true:false
     }},
     twoFA: { type: Boolean, default: false },
     isDeleted: { type: Boolean, default: false },
     deletedAt: Date,
+
+    bannedUntil: Date,
+    bannedAt: Date,
+    bannedBy :{type: mongoose.Schema.Types.ObjectId, ref : "User"},
+
+
     isConfirmed:{type:Boolean,default:false},
-    isVerified:{type:Boolean,default:false},
     provider: {
       type: String,
       enum: [provider.google, provider.system],

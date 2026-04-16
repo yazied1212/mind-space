@@ -2,23 +2,40 @@ import { OAuth2Client } from "google-auth-library";
 import { OTP } from "../../db/models/otp.js";
 import { User } from "../../db/models/user.js";
 import { generateAndSendOtp } from "../../middlewares/index.js";
-import { AppError, messages, provider, roles, sendEmail, signToken, verifyToken } from "../../utils/index.js";
+import { AppError, cvStatuses, messages, provider, roles, sendEmail, signToken, verifyToken } from "../../utils/index.js";
 import bcrypt from "bcrypt"
+import cloudinary from "../../utils/multer/cloud-config.js";
 
 export const signUp = async (req, res, next) => {
 
   const { email, userName, password, gender, role ,age,specialty} = req.body;
 
-  const createdUser = await User.create({
+  let secure_url, public_id;
+   if(req.file){
+  const result = await cloudinary.uploader.upload(
+    req.file.path,
+    { folder: `mind-space/users/${email}/CV`}
+  );
+  
+  secure_url = result.secure_url;
+  public_id = result.public_id;
+}
+
+  
+  const userData={
     userName,
     email,
     password,
     gender,
     role,
     age,
-    specialty
-  });
-  
+  }
+  if(role==roles.therapist){
+    userData.specialty=specialty,
+    userData.cv={secure_url,public_id}
+  }
+
+  const createdUser = await User.create(userData);
 
     const token=signToken({payload:{id:createdUser._id},options:{expiresIn:"1m"}})
     const link=`http://localhost:3000/auth/activate-account/${token}`
@@ -58,36 +75,50 @@ export const activateAccount = async (req, res, next) => {
   });
 };
 
-
-
 export const login = async (req, res, next) => {
   const { email, password } = req.body;
 
-  const emailExists = await User.findOne({ email: email });
-  if (!emailExists) {
-    return next(new AppError(messages.user.invalidEorP,  401 ));
+  const user = await User.findOne({ email });
+  if (!user) {
+    return next(new AppError(messages.user.invalidEorP, 401));
   }
 
-  const match = bcrypt.compareSync(password, emailExists.password);
+  if (user.bannedUntil && user.bannedUntil < Date.now()) {
+    user.bannedAt = undefined;
+    user.bannedUntil = undefined;
+    user.bannedBy = undefined;
+    await user.save();
+  }
+
+  if (user.bannedUntil && user.bannedUntil > Date.now()) {
+    return next(new AppError("your account is temporarily banned", 403));
+  }
+  
+
+  const match = bcrypt.compareSync(password, user.password);
   if (!match) {
-    return next(new AppError(messages.user.invalidEorP,  401 ));
+    return next(new AppError(messages.user.invalidEorP, 401));
   }
 
-  if(emailExists.isConfirmed===false){
+  if(user.isConfirmed===false){
         return next(new AppError("please activate your account",401))
     }
 
-  if(emailExists.role==roles.therapist&&emailExists.isVerified==false){
+  if(user.role==roles.therapist&&user.cvStatus==cvStatuses.pending){
     return next(new AppError("please wait for CV verification"))
   }   
 
-  if (emailExists.isDeleted === true) {
-    emailExists.isDeleted = false;
-    await emailExists.save();
+  if(user.cvStatus==cvStatuses.rejected){
+    return next(new AppError("your cv got rejected",401))
+  } 
+
+  if (user.isDeleted === true) {
+    user.isDeleted = false;
+    await user.save();
   }
 
-  if (emailExists.twoFA === true) {
-    await generateAndSendOtp(emailExists.email);
+  if (user.twoFA === true) {
+    await generateAndSendOtp(user.email);
     return res.status(201).json({
       success: true,
       message: messages.otp.createdSuccessfully,
@@ -95,21 +126,22 @@ export const login = async (req, res, next) => {
   }
 
   const accessToken = signToken({
-    payload: { id: emailExists._id },
+    payload: { id: user._id },
     options: { expiresIn: "1h" },
   });
   const refreshToken = signToken({
-    payload: { id: emailExists._id },
+    payload: { id: user._id },
     options: { expiresIn: "1y" },
   });
 
   return res.status(200).json({
     success: true,
     message: messages.user.login,
-    accessToken: accessToken,
-    refreshToken: refreshToken,
+    accessToken,
+    refreshToken,
   });
 };
+
 
 
 export const refreshToken = async (req, res, next) => {
@@ -254,7 +286,9 @@ export const Disable2Fa=async(req,res,next)=>{
 
 }
 
-//login with google
+
+
+// login with google
 const verifyGoogleToken = async (idToken) => {
   const client = new OAuth2Client();
   const ticket = await client.verifyIdToken({
@@ -266,38 +300,50 @@ const verifyGoogleToken = async (idToken) => {
 };
 
 export const googleLogin = async (req, res, next) => {
-  const { idToken,role } = req.body;
-  const { email, picture, name, } = await verifyGoogleToken(idToken);
-  let emailExists = await User.findOne({ email });
-  if (!emailExists) {
-    emailExists = await User.create({
+  const { idToken, role } = req.body;
+  const { email, picture, name } = await verifyGoogleToken(idToken);
+
+  let user = await User.findOne({ email });
+
+  if (!user) {
+    user = await User.create({
       email,
       pfp: picture,
       userName: name,
       provider: provider.google,
-      isConfirmed:true,
-      role
+      isConfirmed: true,
+      role,
     });
   }
 
+  if (user.bannedUntil && user.bannedUntil < Date.now()) {
+    user.bannedAt = null;
+    user.bannedUntil = null;
+    await user.save();
+  }
+
+  if (user.bannedUntil && user.bannedUntil > Date.now()) {
+    return next(new AppError("your account is temporarily banned", 403));
+  }
+
+  if (user.isDeleted === true) {
+    user.isDeleted = false;
+    await user.save();
+  }
+
   const accessToken = signToken({
-    payload: { id: emailExists._id },
+    payload: { id: user._id },
     options: { expiresIn: "1h" },
   });
   const refreshToken = signToken({
-    payload: { id: emailExists._id },
+    payload: { id: user._id },
     options: { expiresIn: "1y" },
   });
-
-  if (emailExists.isDeleted === true) {
-    emailExists.isDeleted = false;
-    await emailExists.save();
-  }
 
   return res.status(200).json({
     success: true,
     message: messages.user.login,
-    accessToken: accessToken,
-    refreshToken: refreshToken,
+    accessToken,
+    refreshToken,
   });
 };

@@ -1,5 +1,6 @@
 import joi from "joi";
 import { genders, roles, specialties } from "../../utils/index.js";
+import { generaleField } from "../../middlewares/isValid.js";
 
 
 //register
@@ -15,7 +16,12 @@ export const signUpSchema = joi
       .required(),
     role:joi.string().valid(...Object.values(roles)).required(),
     age:joi.number().min(18).required(),
-    specialty:joi.string().valid(...specialties).required()
+    specialty: joi.when("role", {
+      is: roles.therapist,
+      then: joi.string().valid(...specialties).required(),
+      otherwise: joi.forbidden()
+    }),
+    
   })
   .required();
 
