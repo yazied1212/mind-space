@@ -1,10 +1,5 @@
 @NEW APIS
 
-user report a therapist or another user
-therapist reports a user for an inappropriate feedback(سبو بامو او كدا)
-admin views the reports
-
-
 
 update article
 
@@ -14,16 +9,13 @@ filter for +18 content
 
 add (life coach role , relationship coach , career couch , performance coach , therapist)
 
-
 create a group
 delete the group
 update the group
 join the group
 leave the group
 
-
 socket io apis(session and support groups)
-
 
 @EDIT CURRENT APIS
 

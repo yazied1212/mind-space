@@ -2,7 +2,7 @@ import { OAuth2Client } from "google-auth-library";
 import { OTP } from "../../db/models/otp.js";
 import { User } from "../../db/models/user.js";
 import { generateAndSendOtp } from "../../middlewares/index.js";
-import { AppError, messages, provider, sendEmail, signToken, verifyToken } from "../../utils/index.js";
+import { AppError, cvStatuses, messages, provider, roles, sendEmail, signToken, verifyToken } from "../../utils/index.js";
 import bcrypt from "bcrypt"
 import { getNewLoginCredentials, logoutEnum } from "../../utils/token/getNewCredentials.js";
 import { TokenModel } from "../../db/models/token.js";

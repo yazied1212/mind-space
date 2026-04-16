@@ -35,3 +35,7 @@ export const provider = {
   google: "google",
   system: "system",
 };
+
+export const reportReasons=[
+  "suicide encouragement","dangerous psychological advice","unqualified therapist","harassment","hate speech","inappropriate content","scam","privacy violation","other"
+]

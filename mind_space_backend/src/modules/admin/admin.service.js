@@ -1,5 +1,6 @@
 import { Answer } from "../../db/models/answers.js"
 import { Question } from "../../db/models/questions.js"
+import { Report } from "../../db/models/report.js"
 import { User } from "../../db/models/user.js"
 import { AppError, cvStatuses, messages, sendEmail } from "../../utils/index.js"
 
@@ -259,4 +260,31 @@ export const judgeCV= async(req,res,next)=>{
 
   
 
+}
+
+export const viewReports=async(req,res,next)=>{
+
+  let { page, size } = req.query;
+    if (!page) {
+     page = 1;
+    }
+    if (!size) {
+        size = 20;
+     }
+    const skip = (page - 1) * size;
+
+
+    const reports=await Report.find({},{createdAt:0,updatedAt:0},{limit:size,slip:skip})
+
+    if(reports.length==0){
+      res.status(404).json({
+        success:false,
+        message:messages.report.notFound
+      })
+    }
+
+    res.status(200).json({
+      success:true,
+      data:reports
+    })
 }

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {  idSchema, isAuthenticate, isAuthorized, isValid,  } from "../../middlewares/index.js";
 import { asyncHandler, roles } from "../../utils/index.js";
-import { addQuestions, deleteQuestion,BanAccount, updateAnswer, updateQuestion, viewQuestions, viewUsers, UnBanAccount, viewCVs,judgeCV} from "./admin.service.js";
+import { addQuestions, deleteQuestion,BanAccount, updateAnswer, updateQuestion, viewQuestions, viewUsers, UnBanAccount, viewCVs,judgeCV, viewReports} from "./admin.service.js";
 import { addQuestionsSchema, judgeCvSchema, updateAnswerSchema, updateQuestionSchema, BanAccountSchema,UnBanAccountSchema} from "./admin.validation.js";
 
 const router =Router()
@@ -16,5 +16,6 @@ router.patch("/edit-answer/:id",isValid(updateAnswerSchema),asyncHandler(updateA
 router.get("/view-users",asyncHandler(viewUsers))
 router.get("/view-cvs",asyncHandler(viewCVs))
 router.patch("/judge-cv/:id",isValid(judgeCvSchema),asyncHandler(judgeCV))
+router.get("/reports",asyncHandler(viewReports))
 
 export default router

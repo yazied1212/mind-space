@@ -1,3 +1,4 @@
+import { Report } from "../../db/models/report.js";
 import { User } from "../../db/models/user.js";
 import { defaultPfpId, defaultPfpUrl, messages } from "../../utils/index.js";
 import cloudinary from "../../utils/multer/cloud-config.js";
@@ -87,4 +88,23 @@ export const resetPfp= async(req,res,next)=>{
   })
 }
 
+export const report=async(req,res,next)=>{
 
+  const {id}=req.params
+  const{reason,content}=req.body
+  const report=await Report.create(
+    {
+      userId:req.authUser._id,
+      reportedUserId:id,
+      reason:reason,
+      content:content
+    }
+  )
+
+  res.status(201).json({
+    success:true,
+    message:messages.report.createdSuccessfully,
+    data:report
+  })
+
+}

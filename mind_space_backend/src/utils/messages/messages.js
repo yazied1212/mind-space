@@ -30,4 +30,5 @@ export const messages = {
   questions: generateMessages("questions"),
   question: generateMessages("question"),
   answer: generateMessages("answer"),
+  report: generateMessages("report"),
 };
