@@ -24,6 +24,7 @@ router.post(
   asyncHandler(upPfp),
 );
 router.patch("/reset-profile-picture",asyncHandler(resetPfp))
+//router.post("/report/:id",)
 
 
 
