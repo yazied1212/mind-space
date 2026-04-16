@@ -1,4 +1,5 @@
 import joi from "joi";
+import { logoutEnum } from "../../utils/token/getNewCredentials.js";
 import { genders, roles, specialties } from "../../utils/index.js";
 import { generaleField } from "../../middlewares/isValid.js";
 
@@ -90,3 +91,13 @@ export const google = joi
     role:joi.string().valid(...Object.values(roles)).required(),
   })
   .required();
+
+
+  export const logoutValidation = 
+  joi.object({
+      flag : joi.string().valid(...Object.values(logoutEnum)).
+      default(logoutEnum.stayLoggedIn),
+    })
+    .required();
+
+

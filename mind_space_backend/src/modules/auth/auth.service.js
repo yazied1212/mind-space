@@ -2,9 +2,10 @@ import { OAuth2Client } from "google-auth-library";
 import { OTP } from "../../db/models/otp.js";
 import { User } from "../../db/models/user.js";
 import { generateAndSendOtp } from "../../middlewares/index.js";
-import { AppError, cvStatuses, messages, provider, roles, sendEmail, signToken, verifyToken } from "../../utils/index.js";
+import { AppError, messages, provider, sendEmail, signToken, verifyToken } from "../../utils/index.js";
 import bcrypt from "bcrypt"
-import cloudinary from "../../utils/multer/cloud-config.js";
+import { getNewLoginCredentials, logoutEnum } from "../../utils/token/getNewCredentials.js";
+import { TokenModel } from "../../db/models/token.js";
 
 export const signUp = async (req, res, next) => {
 
@@ -94,16 +95,6 @@ export const login = async (req, res, next) => {
     return next(new AppError("your account is temporarily banned", 403));
   }
   
-
-  const match = bcrypt.compareSync(password, user.password);
-  if (!match) {
-    return next(new AppError(messages.user.invalidEorP, 401));
-  }
-
-  if(user.isConfirmed===false){
-        return next(new AppError("please activate your account",401))
-    }
-
   if(user.role==roles.therapist&&user.cvStatus==cvStatuses.pending){
     return next(new AppError("please wait for CV verification"))
   }   
@@ -111,6 +102,15 @@ export const login = async (req, res, next) => {
   if(user.cvStatus==cvStatuses.rejected){
     return next(new AppError("your cv got rejected",401))
   } 
+
+  const match = bcrypt.compareSync(password, user.password);
+  if (!match) {
+    return next(new AppError(messages.user.invalidEorP, 401));
+  }
+
+  if (user.isConfirmed === false) {
+    return next(new AppError("please activate your account", 401));
+  }
 
   if (user.isDeleted === true) {
     user.isDeleted = false;
@@ -125,25 +125,42 @@ export const login = async (req, res, next) => {
     });
   }
 
-  const accessToken = signToken({
-    payload: { id: user._id },
-    options: { expiresIn: "1h" },
-  });
-  const refreshToken = signToken({
-    payload: { id: user._id },
-    options: { expiresIn: "1y" },
-  });
+ const NewCredentials = await getNewLoginCredentials(user);
 
   return res.status(200).json({
     success: true,
     message: messages.user.login,
-    accessToken,
-    refreshToken,
+    data: NewCredentials,
   });
 };
 
+export const logout = async (req, res, next) => {
+  const { flag } = req.body;
 
+  switch (flag) {
+    case logoutEnum.logoutFromAllDevices:
+      await User.updateOne(
+        { _id: req.authUser._id },
+        {
+          changeCredentialsTime: Date.now(),
+        }
+      );
+      break;
 
+    default:
+      await TokenModel.create({
+        jti: req.decoded.jti,
+        userId: req.authUser._id,
+        expiresAt: new Date(req.decoded.exp * 1000),
+      });
+      break;
+  }
+
+  return res.status(200).json({
+    success: true,
+    message: messages.user.logout,
+  });
+};
 export const refreshToken = async (req, res, next) => {
   const { refreshToken } = req.body;
   const { error, id, iat } = verifyToken(refreshToken);
@@ -331,19 +348,11 @@ export const googleLogin = async (req, res, next) => {
     await user.save();
   }
 
-  const accessToken = signToken({
-    payload: { id: user._id },
-    options: { expiresIn: "1h" },
-  });
-  const refreshToken = signToken({
-    payload: { id: user._id },
-    options: { expiresIn: "1y" },
-  });
+ const NewCredentials = await getNewLoginCredentials(user);
 
   return res.status(200).json({
     success: true,
     message: messages.user.login,
-    accessToken,
-    refreshToken,
+    data: NewCredentials,
   });
 };

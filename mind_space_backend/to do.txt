@@ -4,12 +4,7 @@ user report a therapist or another user
 therapist reports a user for an inappropriate feedback(سبو بامو او كدا)
 admin views the reports
 
-user gives feedback about his therapist
-user deletes his feedback
-user updates his feedback
 
-admin views the feedbacks on a therapist
-admin deletes a feedback on a therapist
 
 update article
 
@@ -17,12 +12,8 @@ user sees available therapists
 
 filter for +18 content
 
-life coach role
+add (life coach role , relationship coach , career couch , performance coach , therapist)
 
-user book a session
-therapist confirm the session
-user cancel the session
-user or therapist delay the session
 
 create a group
 delete the group
@@ -38,7 +29,8 @@ socket io apis(session and support groups)
 
 secure forgot password and 2fa chain
 login with google(code is ready)
-
+edit feedback and session api for gitting the id
+discuss the logic again 
 
 @حبشتكنات
 

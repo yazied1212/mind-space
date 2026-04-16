@@ -7,19 +7,23 @@ const tokenSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    expiresIn: {
-      type: Number,
-      required: true,
-    },
+
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
+
+    expiresAt: {
+      type: Date,
+      required: true,
+    },
   },
   {
-    timestamps: true, 
+    timestamps: true,
   }
 );
 
-export const TokenModel = mongoose.model("Token", tokenSchema); 
+tokenSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+
+export const TokenModel = mongoose.model("Token", tokenSchema);

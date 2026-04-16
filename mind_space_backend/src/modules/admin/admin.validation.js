@@ -25,6 +25,19 @@ export const updateAnswerSchema=joi.object({
     points:joi.number()
 }).or('answer', 'points').required()
 
+
+
+export const BanAccountSchema=joi.object({
+  id:generaleField.id.required(),
+  duration:generaleField.duration.required(),
+}).required()
+
+
+export const UnBanAccountSchema=joi.object({
+  id:generaleField.id.required(),
+}).required()
+
+
 export const judgeCvSchema=joi.object({
     id:generaleField.id.required(),
     decision:joi.string().valid(...[cvStatuses.accepted,cvStatuses.rejected]).required()
