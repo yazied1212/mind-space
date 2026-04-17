@@ -1,7 +1,8 @@
 import { Answer } from "../../db/models/answers.js"
 import { Question } from "../../db/models/questions.js"
+import { Report } from "../../db/models/report.js"
 import { User } from "../../db/models/user.js"
-import { AppError, messages } from "../../utils/index.js"
+import { AppError, cvStatuses, messages, sendEmail } from "../../utils/index.js"
 
 export const addQuestions=async(req,res,next)=>{
 
@@ -205,5 +206,85 @@ export const viewUsers=async(req,res,next)=>{
     return res.status(200).json({
         success:true,
         data:users
+    })
+}
+
+
+export const viewCVs= async(req,res,next)=>{
+
+  const data= await User.find({
+    cv:{$exists:true},
+    cvStatus:cvStatuses.pending
+  },{cv:1})
+
+  if(data.length===0){
+    return next(new AppError("no cv found",404))
+  }
+
+  return res.status(200).json({
+    success:true,
+    data:data
+  })
+
+}
+
+export const judgeCV= async(req,res,next)=>{
+
+  const{id}=req.params
+  const{decision}=req.body
+
+  const user=await User.findByIdAndUpdate(id,{
+    cvStatus:decision
+  })
+
+  if(!user){
+    return next(new AppError(messages.user.notFound))
+  }
+  
+
+    const isSent=await sendEmail({
+            to:user.email,
+            subject:"cv",
+            html:`<p>your cv got ${decision}</a></p>`
+        })
+        if(!isSent){
+            return next(new AppError("fail to send email please try again"))
+        }
+  
+
+  return res.status(200).json({
+    success:true,
+    message:`the cv is ${decision}`
+  })
+
+
+  
+
+}
+
+export const viewReports=async(req,res,next)=>{
+
+  let { page, size } = req.query;
+    if (!page) {
+     page = 1;
+    }
+    if (!size) {
+        size = 20;
+     }
+    const skip = (page - 1) * size;
+
+
+    const reports=await Report.find({},{createdAt:0,updatedAt:0},{limit:size,slip:skip})
+
+    if(reports.length==0){
+      res.status(404).json({
+        success:false,
+        message:messages.report.notFound
+      })
+    }
+
+    res.status(200).json({
+      success:true,
+      data:reports
     })
 }

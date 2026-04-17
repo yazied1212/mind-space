@@ -7,6 +7,14 @@ export const roles={
 
 export const genders=["male","female"]
 
+export const specialties=["life coach","relationship coach","career coach","therapist","performance and skill coach"]
+
+export const cvStatuses={
+  pending:"pending",
+  accepted:"accepted",
+  rejected:"rejected"
+}
+
 export const sessionStatus=["scheduled","ongoing","finished","canceled","didn't show"]
 
 export const testStatus={
@@ -27,3 +35,7 @@ export const provider = {
   google: "google",
   system: "system",
 };
+
+export const reportReasons=[
+  "suicide encouragement","dangerous psychological advice","unqualified therapist","harassment","hate speech","inappropriate content","scam","privacy violation","other"
+]

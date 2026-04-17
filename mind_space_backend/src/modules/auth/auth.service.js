@@ -2,24 +2,41 @@ import { OAuth2Client } from "google-auth-library";
 import { OTP } from "../../db/models/otp.js";
 import { User } from "../../db/models/user.js";
 import { generateAndSendOtp } from "../../middlewares/index.js";
-import { AppError, messages, provider, sendEmail, signToken, verifyToken } from "../../utils/index.js";
+import { AppError, cvStatuses, messages, provider, roles, sendEmail, signToken, verifyToken } from "../../utils/index.js";
 import bcrypt from "bcrypt"
 import { getNewLoginCredentials, logoutEnum } from "../../utils/token/getNewCredentials.js";
 import { TokenModel } from "../../db/models/token.js";
 
 export const signUp = async (req, res, next) => {
 
-  const { email, userName, password, gender, role ,age} = req.body;
+  const { email, userName, password, gender, role ,age,specialty} = req.body;
 
-  const createdUser = await User.create({
+  let secure_url, public_id;
+   if(req.file){
+  const result = await cloudinary.uploader.upload(
+    req.file.path,
+    { folder: `mind-space/users/${email}/CV`}
+  );
+  
+  secure_url = result.secure_url;
+  public_id = result.public_id;
+}
+
+  
+  const userData={
     userName,
     email,
     password,
     gender,
     role,
-    age
-  });
-  
+    age,
+  }
+  if(role==roles.therapist){
+    userData.specialty=specialty,
+    userData.cv={secure_url,public_id}
+  }
+
+  const createdUser = await User.create(userData);
 
     const token=signToken({payload:{id:createdUser._id},options:{expiresIn:"1m"}})
     const link=`http://localhost:3000/auth/activate-account/${token}`
@@ -78,6 +95,16 @@ export const login = async (req, res, next) => {
     return next(new AppError("your account is temporarily banned", 403));
   }
   
+<<<<<<< HEAD
+=======
+  if(user.role==roles.therapist&&user.cvStatus==cvStatuses.pending){
+    return next(new AppError("please wait for CV verification"))
+  }   
+
+  if(user.cvStatus==cvStatuses.rejected){
+    return next(new AppError("your cv got rejected",401))
+  } 
+>>>>>>> 9f536b4083d51b61878b2c524e1670f3ac395f8c
 
   const match = bcrypt.compareSync(password, user.password);
   if (!match) {

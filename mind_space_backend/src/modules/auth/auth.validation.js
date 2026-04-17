@@ -1,6 +1,12 @@
 import joi from "joi";
+<<<<<<< HEAD
 import { genders, roles } from "../../utils/index.js";
 import { logoutEnum } from "../../utils/token/getNewCredentials.js";
+=======
+import { logoutEnum } from "../../utils/token/getNewCredentials.js";
+import { genders, roles, specialties } from "../../utils/index.js";
+import { generaleField } from "../../middlewares/isValid.js";
+>>>>>>> 9f536b4083d51b61878b2c524e1670f3ac395f8c
 
 
 //register
@@ -15,7 +21,13 @@ export const signUpSchema = joi
       .valid(...genders)
       .required(),
     role:joi.string().valid(...Object.values(roles)).required(),
-    age:joi.number().min(18).required()
+    age:joi.number().min(18).required(),
+    specialty: joi.when("role", {
+      is: roles.therapist,
+      then: joi.string().valid(...specialties).required(),
+      otherwise: joi.forbidden()
+    }),
+    
   })
   .required();
 

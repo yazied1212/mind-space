@@ -1,4 +1,5 @@
-import { genders } from "../../utils/index.js";
+import { generaleField } from "../../middlewares/isValid.js";
+import { genders, reportReasons } from "../../utils/index.js";
 import joi from "joi";
 
 export const updatedUserSchema = joi
@@ -11,5 +12,17 @@ export const updatedUserSchema = joi
   })
   .required();
 
+<<<<<<< HEAD
+=======
+export const reportSchema=joi.object({
+  id:generaleField.id.required(),
+  reason:joi.string().valid(...reportReasons).required(),
+  content:joi.string().when('reason', {
+    is: joi.valid('other','dangerous psychological advice', 'unqualified therapist'),
+    then: joi.required(),
+    otherwise: joi.optional()})
+})
+
+>>>>>>> 9f536b4083d51b61878b2c524e1670f3ac395f8c
 
   
