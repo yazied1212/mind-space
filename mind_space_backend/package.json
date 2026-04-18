@@ -20,11 +20,7 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.0.1",
     "multer": "^2.0.2",
-<<<<<<< HEAD
-    "nanoid": "^5.1.7",
-=======
     "nanoid": "^5.1.9",
->>>>>>> 9f536b4083d51b61878b2c524e1670f3ac395f8c
     "nodemailer": "^7.0.13"
   }
 }

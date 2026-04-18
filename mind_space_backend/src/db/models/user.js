@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-import mongoose, { model, Schema, Types } from "mongoose"
-import { defaultPfpId, defaultPfpUrl, genders, provider, roles } from "../../utils/index.js"
-=======
 import { cvStatuses, defaultPfpId, defaultPfpUrl, genders, provider, roles, specialties } from "../../utils/index.js"
 import mongoose, { model, Schema, Types } from "mongoose"
->>>>>>> 9f536b4083d51b61878b2c524e1670f3ac395f8c
 import bcrypt from "bcrypt"
 
 //schema

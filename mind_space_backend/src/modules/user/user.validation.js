@@ -12,8 +12,6 @@ export const updatedUserSchema = joi
   })
   .required();
 
-<<<<<<< HEAD
-=======
 export const reportSchema=joi.object({
   id:generaleField.id.required(),
   reason:joi.string().valid(...reportReasons).required(),
@@ -23,6 +21,5 @@ export const reportSchema=joi.object({
     otherwise: joi.optional()})
 })
 
->>>>>>> 9f536b4083d51b61878b2c524e1670f3ac395f8c
 
   

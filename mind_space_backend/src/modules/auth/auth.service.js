@@ -95,8 +95,6 @@ export const login = async (req, res, next) => {
     return next(new AppError("your account is temporarily banned", 403));
   }
   
-<<<<<<< HEAD
-=======
   if(user.role==roles.therapist&&user.cvStatus==cvStatuses.pending){
     return next(new AppError("please wait for CV verification"))
   }   
@@ -104,7 +102,6 @@ export const login = async (req, res, next) => {
   if(user.cvStatus==cvStatuses.rejected){
     return next(new AppError("your cv got rejected",401))
   } 
->>>>>>> 9f536b4083d51b61878b2c524e1670f3ac395f8c
 
   const match = bcrypt.compareSync(password, user.password);
   if (!match) {

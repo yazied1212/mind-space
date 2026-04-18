@@ -1,12 +1,7 @@
 import joi from "joi";
-<<<<<<< HEAD
-import { genders, roles } from "../../utils/index.js";
-import { logoutEnum } from "../../utils/token/getNewCredentials.js";
-=======
 import { logoutEnum } from "../../utils/token/getNewCredentials.js";
 import { genders, roles, specialties } from "../../utils/index.js";
 import { generaleField } from "../../middlewares/isValid.js";
->>>>>>> 9f536b4083d51b61878b2c524e1670f3ac395f8c
 
 
 //register

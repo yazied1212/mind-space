@@ -36,12 +36,10 @@ export const BanAccountSchema=joi.object({
 export const UnBanAccountSchema=joi.object({
   id:generaleField.id.required(),
 }).required()
-<<<<<<< HEAD
-=======
 
 
 export const judgeCvSchema=joi.object({
     id:generaleField.id.required(),
     decision:joi.string().valid(...[cvStatuses.accepted,cvStatuses.rejected]).required()
 })
->>>>>>> 9f536b4083d51b61878b2c524e1670f3ac395f8c
+
