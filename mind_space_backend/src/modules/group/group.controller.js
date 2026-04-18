@@ -2,8 +2,8 @@ import { Router } from "express"
 import { isAuthenticate } from "../../middlewares/auth.js"
 import { asyncHandler } from "../../utils/error/async_handler.js"
 import { isValid } from "../../middlewares/isValid.js"
-import { createGroup, joinGroup, leaveGroup, removeUserFromGroup } from "./group.service.js"
-import { createGroupSchema, joinGroupSchema, leaveGroupSchema, removeUserFromGroupSchema } from "./group.validation.js"
+import { createGroup, joinGroup, leaveGroup, removeUserFromGroup, updateGroup } from "./group.service.js"
+import { createGroupSchema, joinGroupSchema, leaveGroupSchema, removeUserFromGroupSchema, updateGroupSchema } from "./group.validation.js"
 import { isAuthorized } from "../../middlewares/isAuthorized.js"
 import { roles } from "../../utils/index.js"
 
@@ -15,5 +15,6 @@ router.post("/create-group",isAuthenticate,isAuthorized(roles.admin),isValid(cre
 router.delete("/remove-user/:groupId/:userId",isAuthenticate,isAuthorized(roles.admin),
 isValid(removeUserFromGroupSchema),asyncHandler(removeUserFromGroup))
 
+router.put("/update-group/:groupId",isAuthenticate,isAuthorized(roles.admin),isValid(updateGroupSchema),asyncHandler(updateGroup))
 
 export default router

@@ -96,3 +96,29 @@ export const removeUserFromGroup = async(req,res,next)=>{
     })  
     
 }
+
+export const updateGroup = async(req,res,next)=>{
+    const {groupId}=req.params
+    const {name,description}=req.body
+    
+    if(!name && !description){
+        return next(new AppError("No updates provided", 400))
+    }
+
+    const updatedGroup = await SG.findOneAndUpdate(
+        {_id:groupId},
+        {name,description},
+        {new:true}
+    )
+
+    if(!updatedGroup){
+        return next(new AppError("Group not found",404))
+
+    }
+
+    return res.status(200).json({
+        success:true,
+        message:"Group updated successfully",
+        result:updatedGroup
+    })
+}
