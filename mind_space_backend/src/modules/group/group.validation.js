@@ -1,12 +1,9 @@
 import joi from "joi"
 
-export const joinGroupSchema = joi.object({
+export const GroupSchema = joi.object({
     groupId: joi.string().hex().length(24).required()
 }).required()
 
-export const leaveGroupSchema = joi.object({
-    groupId: joi.string().hex().length(24).required()
-}).required()
 
 export const createGroupSchema = joi.object({
     name: joi.string().min(3).max(50).required(),
