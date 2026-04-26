@@ -10,6 +10,7 @@ import { roles } from "../../utils/index.js"
 const router = Router()
 
 router.post("/join/:groupId", isAuthenticate, isValid(GroupSchema), asyncHandler(joinGroupRequest))
+// Admin accept or reject join requests (API) -----> need to be implemented by socket.io for real-time updates to users
 router.post("/leave/:groupId",isAuthenticate,isValid(GroupSchema),asyncHandler(leaveGroup))
 router.post("/create-group",isAuthenticate,isAuthorized(roles.admin),isValid(createGroupSchema), asyncHandler(createGroup))
 router.delete("/remove-user/:groupId/:userId",isAuthenticate,isAuthorized(roles.admin),
