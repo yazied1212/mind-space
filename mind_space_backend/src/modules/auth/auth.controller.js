@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { asyncHandler, roles } from "../../utils/index.js";
+import { asyncHandler, cloudUpload, fileValidation, roles } from "../../utils/index.js";
 import {  activateAccount, Disable2Fa, enable2FA, forgetPassword, googleLogin,
    login, logout, refreshToken, sendOTP, signUp, twoFaLogin, twoFaSendOtp, verifyOtp } from "./auth.service.js";
 
@@ -10,7 +10,7 @@ import { isAuthenticate, isAuthorized, isValid } from "../../middlewares/index.j
 
 
 const router=Router()
-router.post("/sign-up",isValid(signUpSchema),asyncHandler(signUp))
+router.post("/sign-up",cloudUpload(fileValidation.pdf).single("cv"),isValid(signUpSchema),asyncHandler(signUp))
 router.get("/activate-account/:token", asyncHandler(activateAccount));
 router.post("/login",isValid(loginSchema), asyncHandler(login));
 router.post("/logout", isValid(logoutValidation),isAuthenticate,  asyncHandler(logout));

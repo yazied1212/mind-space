@@ -1,8 +1,8 @@
 import { Router } from "express";
 import {  idSchema, isAuthenticate, isAuthorized, isValid,  } from "../../middlewares/index.js";
 import { asyncHandler, roles } from "../../utils/index.js";
-import { addQuestions, deleteQuestion,BanAccount, updateAnswer, updateQuestion, viewQuestions, viewUsers, UnBanAccount } from "./admin.service.js";
-import { addQuestionsSchema, BanAccountSchema, UnBanAccountSchema, updateAnswerSchema, updateQuestionSchema, } from "./admin.validation.js";
+import { addQuestions, deleteQuestion,BanAccount, updateAnswer, updateQuestion, viewQuestions, viewUsers, UnBanAccount, viewCVs,judgeCV, viewReports} from "./admin.service.js";
+import { addQuestionsSchema, judgeCvSchema, updateAnswerSchema, updateQuestionSchema, BanAccountSchema,UnBanAccountSchema} from "./admin.validation.js";
 
 const router =Router()
 router.use(isAuthenticate,isAuthorized(roles.admin))
@@ -14,5 +14,8 @@ router.delete("{/:id}/unban-account",isValid(UnBanAccountSchema), asyncHandler(U
 router.patch("/edit-question/:id",isValid(updateQuestionSchema),asyncHandler(updateQuestion))
 router.patch("/edit-answer/:id",isValid(updateAnswerSchema),asyncHandler(updateAnswer))
 router.get("/view-users",asyncHandler(viewUsers))
+router.get("/view-cvs",asyncHandler(viewCVs))
+router.patch("/judge-cv/:id",isValid(judgeCvSchema),asyncHandler(judgeCV))
+router.get("/reports",asyncHandler(viewReports))
 
 export default router

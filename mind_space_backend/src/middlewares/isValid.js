@@ -5,9 +5,9 @@ export const isValid = (schema) => {
   return (req, res, next) => {
     try {
       const data = { ...req.body, ...req.params, ...req.query };
-      if (req.file || req.files) {
+     /* if (req.file || req.files) {
         data.attachments = req.file || req.files;
-      }
+      }*/
 
       const result = schema.validate(data, { abortEarly: false });
 

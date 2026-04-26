@@ -1,5 +1,5 @@
 import joi from "joi";
-import { testTypes } from "../../utils/index.js";
+import { cvStatuses, testTypes } from "../../utils/index.js";
 import { generaleField } from "../../middlewares/isValid.js";
 
 export const addQuestionsSchema = joi.object({
@@ -36,3 +36,9 @@ export const BanAccountSchema=joi.object({
 export const UnBanAccountSchema=joi.object({
   id:generaleField.id.required(),
 }).required()
+
+
+export const judgeCvSchema=joi.object({
+    id:generaleField.id.required(),
+    decision:joi.string().valid(...[cvStatuses.accepted,cvStatuses.rejected]).required()
+})

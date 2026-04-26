@@ -11,7 +11,7 @@ const messageSchema=new Schema({
 const sessionSchema=new Schema({
    userId:{type:Types.ObjectId,ref:"User",required:true},
     therapistId:{type:Types.ObjectId,ref:"User",required:true},
-    sessionTime:{type:String,required:true},
+    sessionTime: { type: Date, required: true },
     status:{type:String,required:true,enum:sessionStatus},
     messages:[messageSchema]
 },{
