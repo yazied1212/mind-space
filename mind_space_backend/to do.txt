@@ -1,5 +1,15 @@
 @NEW APIS
 
+<<<<<<< HEAD
+user report a therapist or another user
+therapist reports a user for an inappropriate feedback(سبو بامو او كدا)
+admin views the reports
+
+admin ban user
+admin unban user
+
+=======
+>>>>>>> 9f536b4083d51b61878b2c524e1670f3ac395f8c
 
 update article
 
@@ -8,6 +18,14 @@ user sees available therapists
 filter for +18 content
 
 add (life coach role , relationship coach , career couch , performance coach , therapist)
+<<<<<<< HEAD
+
+user book a session
+therapist confirm the session
+user cancel the session
+user or therapist delay the session
+=======
+>>>>>>> 9f536b4083d51b61878b2c524e1670f3ac395f8c
 
 create a group
 delete the group
@@ -21,8 +39,14 @@ socket io apis(session and support groups)
 
 secure forgot password and 2fa chain
 login with google(code is ready)
+<<<<<<< HEAD
+ensure therapists are real doctors
+edit feedback api for gitting the id
+
+=======
 edit feedback and session api for gitting the id
 discuss the logic again 
+>>>>>>> 9f536b4083d51b61878b2c524e1670f3ac395f8c
 
 @حبشتكنات
 

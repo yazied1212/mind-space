@@ -18,4 +18,6 @@ router.get("/view-cvs",asyncHandler(viewCVs))
 router.patch("/judge-cv/:id",isValid(judgeCvSchema),asyncHandler(judgeCV))
 router.get("/reports",asyncHandler(viewReports))
 
+
+
 export default router

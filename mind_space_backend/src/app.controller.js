@@ -7,6 +7,7 @@ import commentRouter from "./modules/comment/comment.controller.js"
 import feedbackRouter from "./modules/feedback/feedback.controller.js"
 import testRouter from "./modules/test/test.controller.js"
 import adminRouter from "./modules/admin/admin.controller.js"
+import groupRouter from "./modules/group/group.controller.js"
 import sessionRouter from "./modules/session/session.controller.js"
 
 
@@ -22,6 +23,7 @@ export const bootStrap=async(express,app)=>{
     app.use("/comment",commentRouter)
     app.use("/feedback",feedbackRouter)
     app.use("/test",testRouter)
+    app.use("/group", groupRouter)
     app.use("/session",sessionRouter)
 
     
@@ -29,3 +31,4 @@ export const bootStrap=async(express,app)=>{
 
     app.use(errorHandler)
 }
+

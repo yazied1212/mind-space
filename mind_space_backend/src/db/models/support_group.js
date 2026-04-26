@@ -4,6 +4,7 @@ import { model, Schema, Types } from "mongoose"
 const sgSchema=new Schema({
     name:{type:String,required:true},
     description:{type:String},
+    adminId: { type: Types.ObjectId, ref: "User", required: true },
 },{
     versionKey:false,
     timestamps:true
