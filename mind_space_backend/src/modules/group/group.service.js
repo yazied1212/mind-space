@@ -67,30 +67,40 @@ export const removeUserFromGroup = async(req,res,next)=>{
     
 }
 
-export const updateGroup = async(req,res,next)=>{
-    const {groupId}=req.params
-    const {name,description}=req.body
-    
-    const updateData = {}
+export const updateGroup = async (req, res, next) => {
+    const { groupId } = req.params;
+    const { name, description } = req.body;
 
-    if (name) updateData.name = name
-    if (description) updateData.description = description
+    const updateData = {};
+
+    if (typeof name === "string" && name.trim()) {
+        updateData.name = name.trim();
+    }
+
+    if (typeof description === "string" && description.trim()) {
+        updateData.description = description.trim();
+    }
+
+    if (Object.keys(updateData).length === 0) {
+        return next(new AppError("No valid data to update", 400));
+    }
 
     const updatedGroup = await SG.findOneAndUpdate(
-        {_id:groupId},
+        { _id: groupId },
         updateData,
-        {new:true}
-    )
-    if(!updatedGroup){
-        return next(new AppError("Group not found",404))
+        { new: true }
+    );
 
+    if (!updatedGroup) {
+        return next(new AppError("Group not found", 404));
     }
+
     return res.status(200).json({
-        success:true,
-        message:"Group updated successfully",
-        result:updatedGroup
-    })
-}
+        success: true,
+        message: "Group updated successfully",
+        result: updatedGroup
+    });
+};
 
 
 export const joinGroupRequest = async (req, res, next) => {
