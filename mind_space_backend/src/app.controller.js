@@ -9,11 +9,18 @@ import testRouter from "./modules/test/test.controller.js"
 import adminRouter from "./modules/admin/admin.controller.js"
 import groupRouter from "./modules/group/group.controller.js"
 import sessionRouter from "./modules/session/session.controller.js"
+import cors from "cors";
+
 
 
 export const bootStrap=async(express,app)=>{
     app.use(express.json())
-
+    app.use(
+     cors({
+    origin: "http://localhost:5173",    
+    credentials: true,
+    })
+);
     await isConnected()
 
     app.use("/admin",adminRouter)
