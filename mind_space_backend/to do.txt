@@ -27,5 +27,3 @@ anonymous user(role:guest)
 create article does't accept jpg but pfp does
 rate limit
 
-
-

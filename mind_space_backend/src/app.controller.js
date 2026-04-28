@@ -7,12 +7,17 @@ import commentRouter from "./modules/comment/comment.controller.js"
 import feedbackRouter from "./modules/feedback/feedback.controller.js"
 import testRouter from "./modules/test/test.controller.js"
 import adminRouter from "./modules/admin/admin.controller.js"
+import groupRouter from "./modules/group/group.controller.js"
 import sessionRouter from "./modules/session/session.controller.js"
+import cors from "cors";
+
 
 
 export const bootStrap=async(express,app)=>{
-    app.use(express.json())
+     app.use(cors());
 
+    app.use(express.json())
+  
     await isConnected()
 
     app.use("/admin",adminRouter)
@@ -22,6 +27,7 @@ export const bootStrap=async(express,app)=>{
     app.use("/comment",commentRouter)
     app.use("/feedback",feedbackRouter)
     app.use("/test",testRouter)
+    app.use("/group", groupRouter)
     app.use("/session",sessionRouter)
 
     
@@ -29,3 +35,4 @@ export const bootStrap=async(express,app)=>{
 
     app.use(errorHandler)
 }
+

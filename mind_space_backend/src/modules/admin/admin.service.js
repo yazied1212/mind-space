@@ -3,6 +3,7 @@ import { Question } from "../../db/models/questions.js"
 import { Report } from "../../db/models/report.js"
 import { User } from "../../db/models/user.js"
 import { AppError, cvStatuses, messages, sendEmail } from "../../utils/index.js"
+import { SG } from "../../db/models/support_group.js"
 
 export const addQuestions=async(req,res,next)=>{
 
@@ -285,3 +286,4 @@ export const viewReports=async(req,res,next)=>{
       data:reports
     })
 }
+
