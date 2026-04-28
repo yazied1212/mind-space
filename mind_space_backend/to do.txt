@@ -1,13 +1,8 @@
 @NEW APIS
 
-
-update article
-
 user sees available therapists
 
 filter for +18 content
-
-add (life coach role , relationship coach , career couch , performance coach , therapist)
 
 create a group
 delete the group

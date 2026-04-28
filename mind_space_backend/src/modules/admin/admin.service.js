@@ -278,13 +278,10 @@ export const viewReports=async(req,res,next)=>{
     const reports=await Report.find({},{createdAt:0,updatedAt:0},{limit:size,slip:skip})
 
     if(reports.length==0){
-      res.status(404).json({
-        success:false,
-        message:messages.report.notFound
-      })
+      return next(new AppError(messages.report.notFound,404))
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       success:true,
       data:reports
     })

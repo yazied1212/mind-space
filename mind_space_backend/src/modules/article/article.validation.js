@@ -56,3 +56,13 @@ export const undoArticleSchema = joi
     id: generaleField.id.required(),
   })
   .required();
+
+
+  export const updateArticleSchema = joi
+  .object({
+    id:generaleField.id.required(),
+    content: joi.string(),
+    attachments: joi.array().items(generaleField.attachments),
+  })
+  .or("content", "attachments")
+  .required();
