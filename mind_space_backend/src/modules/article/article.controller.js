@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { asyncHandler, cloudUpload, fileValidation, roles } from "../../utils/index.js";
 import commentRouter from "../comment/comment.controller.js";
-import { archiveArticle, createArticle, deleteArticle, getArticles, getSpecificArticle, likeUnlike, restoreArticle, undoArticle } from "./article.service.js";
-import { archiveArticleSchema, createArticleSchema, deleteArticleSchema, getArticlesSchema, getSpecificArticleSchema, likeUnlikeSchema, restoreArticleSchema, undoArticleSchema } from "./article.validation.js";
+import { archiveArticle, createArticle, deleteArticle, getArticles, getSpecificArticle, likeUnlike, restoreArticle, undoArticle, updateArticle } from "./article.service.js";
+import { archiveArticleSchema, createArticleSchema, deleteArticleSchema, getArticlesSchema, getSpecificArticleSchema, likeUnlikeSchema, restoreArticleSchema, undoArticleSchema, updateArticleSchema } from "./article.validation.js";
 import { isAuthenticate, isAuthorized, isValid } from "../../middlewares/index.js";
 
 const router=Router()
@@ -49,5 +49,6 @@ router.patch(
 
 router.delete("/:id", isAuthorized([roles.therapist,roles.admin]),isValid(deleteArticleSchema), asyncHandler(deleteArticle));
 router.delete("/undo/:id", isAuthorized(roles.therapist), isValid(undoArticleSchema), asyncHandler(undoArticle));
+router.put("/update/:id",cloudUpload(...fileValidation.images, ...fileValidation.video).array("attachments"),isValid(updateArticleSchema),asyncHandler(updateArticle))
 
 export default router

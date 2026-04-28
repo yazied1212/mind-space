@@ -209,3 +209,47 @@ export const undoArticle = async (req, res, next) => {
     message: messages.article.deletedSuccessfully,
   });
 };
+
+export const updateArticle=async(req,res,next)=>{
+  const {id}=req.params
+  const {content}=req.body
+
+  let attachments = [];
+
+  const article= await Article.findById(id)
+  if(!article){
+    return next(new AppError(messages.article.notFound,404))
+  }
+
+  if(article.publisher.toString()!=req.authUser._id){
+    return next(new AppError("not allowed",401))
+  }
+
+  if(content){
+    article.content=content
+  }
+
+  if(article.attachments&&attachments){
+    for (const file of article.attachments) {
+    await cloudinary.uploader.destroy(file.public_id);
+  }
+  }
+
+    for (const file of req.files) {
+    const { secure_url, public_id } = await cloudinary.uploader.upload(
+      file.path,
+      { folder: `mind-space/users/${req.authUser._id}/articles` },
+    );
+    attachments.push({ secure_url, public_id });
+  }
+  
+  article.attachments=attachments
+
+  await article.save()
+
+  return res.status(200).json({
+    success:true,
+    message:messages.article.updatedSuccessfully
+  })
+
+}
