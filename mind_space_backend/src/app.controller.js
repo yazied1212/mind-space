@@ -17,7 +17,6 @@ export const bootStrap=async(express,app)=>{
       app.use(
      cors({
     origin: "http://localhost:5173",
-    origin: "localhost:5000",  
     credentials: true,
     })
 );
