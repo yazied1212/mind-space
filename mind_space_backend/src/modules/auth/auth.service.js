@@ -39,7 +39,7 @@ export const signUp = async (req, res, next) => {
   const createdUser = await User.create(userData);
 
     const token=signToken({payload:{id:createdUser._id},options:{expiresIn:"1m"}})
-    const link=`http://localhost:3000/auth/activate-account/${token}`
+    const link=`https://mind-space-ov3r.onrender.com/auth/activate-account/${token}`
     const isSent=await sendEmail({
         to:email,
         subject:"activate your account",
