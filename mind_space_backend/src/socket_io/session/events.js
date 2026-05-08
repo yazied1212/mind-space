@@ -21,9 +21,10 @@ export const joinSession=async(socket,sessionId)=>{
             })
         }
 
-        if(sessionExists.status!=="scheduled"||sessionExists.status!=="ongoing"){
+        const tenMin=10 * 60 * 1000
+        if(Date.now() < sessionExists.sessionTime - tenMin ){
             return socket.emit("error",{
-                message:`you cant join a ${sessionExists.status}`,
+                message:`you cant join a now please comeback at ${sessionExists.sessionTime.toISOString()}`,
                 statusCode:400
             })
         }
@@ -41,4 +42,21 @@ export const joinSession=async(socket,sessionId)=>{
     }
     
 
-    
+    export const leaveSession=async(socket,sessionId)=>{
+        try {
+            const sessionExists=await Session.findById(sessionId)
+            if(!sessionExists){
+            return socket.emit("error",{
+                message:messages.session.notFound,
+                statusCode:404
+            })
+        }
+         socket.leave(sessionId)
+            socket.emit("leftSession",{data:sessionId,message:"left session successfully"})
+        } catch (error) {
+            return socket.emit("error",{
+                message:error.message,
+                statusCode:400
+            })
+        }
+    }
