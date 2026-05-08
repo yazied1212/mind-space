@@ -1,6 +1,7 @@
 import { Server} from "socket.io"
 import { socketAuth } from "./middlewares/socket.auth.js"
 import { handleConnection, handleDisconnection } from "./hooks/online_users.js"
+import { joinSession } from "./session/events.js"
 
 export const initSocket=(server)=>{
 const io=new Server(server,{cors:"*"})
@@ -9,8 +10,11 @@ io.on("connection",(socket)=>{
     handleConnection(socket)
 
     socket.on("disconnect",()=>{
-    handleDisconnection(socket)
-})
+    handleDisconnection(socket)})
+
+     socket.on("joinSession",async(sessionid)=>{
+        await joinSession(socket,sessionId)
+     })
 })
 
 
