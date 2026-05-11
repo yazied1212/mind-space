@@ -1,7 +1,8 @@
 import { Session } from "../../db/models/session.js"
 import { AppError, messages } from "../../utils/index.js"
 
-export const joinSession=async(socket,sessionId)=>{
+export const joinSession=async(socket,data)=>{
+    const {sessionId}=data
     try {
         
         const sessionExists=await Session.findById(sessionId)
@@ -42,7 +43,9 @@ export const joinSession=async(socket,sessionId)=>{
     }
     
 
-    export const leaveSession=async(socket,sessionId)=>{
+    export const leaveSession=async(socket,data)=>{
+    const {sessionId}=data
+
         try {
             const sessionExists=await Session.findById(sessionId)
             if(!sessionExists){

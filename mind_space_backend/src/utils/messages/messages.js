@@ -32,4 +32,5 @@ export const messages = {
   answer: generateMessages("answer"),
   report: generateMessages("report"),
   session: generateMessages("session"),
+  group: generateMessages("group"),
 };
