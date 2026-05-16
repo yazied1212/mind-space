@@ -9,7 +9,7 @@ import { TokenModel } from "../../db/models/token.js";
 
 export const signUp = async (req, res, next) => {
 
-  const { email, userName, password, gender, role ,age,specialty} = req.body;
+  const { email, userName, password, gender, role ,age,specialty,phoneNumber,experience,sessionFee} = req.body;
 
   let secure_url, public_id;
    if(req.file){
@@ -30,9 +30,12 @@ export const signUp = async (req, res, next) => {
     gender,
     role,
     age,
+    phoneNumber
   }
   if(role==roles.therapist){
     userData.specialty=specialty,
+    userData.sessionFee=sessionFee,
+    userData.experience=experience,
     userData.cv={secure_url,public_id}
   }
 

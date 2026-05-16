@@ -9,7 +9,15 @@ export const updatedUserSchema = joi
     password: joi.string(),
     cPassword: joi.string().valid(joi.ref("password")),
     gender: joi.string().valid(...genders),
-  })
+    phoneNumber: joi
+                .string()
+                .pattern(/^[0-9]{10,15}$/)
+                .required(),
+    sessionFee: 
+          joi.string().required(),
+         
+        })              
+  
   .required();
 
 export const reportSchema=joi.object({
