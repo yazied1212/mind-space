@@ -21,9 +21,9 @@ export const testStatus={
   inProgress:"in_progress",
   completed:"completed"
 }
-export const testTypes=["stress"]
-export const questionsNumber=10
-export const points=[5,10,15,20,25]
+export const testTypes=["status",""]
+export const questionsNumber=50
+export const points=[0,0.5,1,1.5,2]
 
 export const stars=[1,2,3,4,5]
 

@@ -52,7 +52,7 @@ export const testResult=async(req,res,next)=>{
         { $group: { _id: null, totalScore: { $sum: "$points" }}}
     ])
 
-    if(answers.length===0/*||answers.length!=questionsNumber*/){
+    if(answers.length===0||answers.length!=questionsNumber){
         return next(new AppError("please answer every question"))
     }
 
@@ -60,11 +60,33 @@ export const testResult=async(req,res,next)=>{
     test.status=testStatus.completed
     await test.save()
     
+    let status=""
+
+    if(test.type=="status"){
+    if(test.score>=0&&test.score<=20){
+        status+="very happy"
+    }
+    else if(test.score>20&&test.score<=40){
+        status+="happy"
+    }
+    else if(test.score>40&&test.score<=70){
+        status+="mild depression"
+    }
+    else if(test.score>70&&test.score<=90){
+        status+="moderate depression"
+    }
+    else{status+="severe depression"}
+    }
+
+    
+    
+    
 
     return res.status(200).json({
         success:true,
         data:{
-            score:test.score
+            score:test.score,
+    ...(status && { status })
         }
     })
 
