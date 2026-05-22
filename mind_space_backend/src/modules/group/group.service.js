@@ -1,5 +1,5 @@
 import { GM } from "../../db/models/group_members.js"
-import { JoinRequest } from "../../db/models/joinRequestSchema.js"
+import { JoinRequest } from "../../db/models/JoinRequest.js"
 import { SG } from "../../db/models/support_group.js"
 import { AppError } from "../../utils/error/AppError.js"
 

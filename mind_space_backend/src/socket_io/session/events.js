@@ -1,6 +1,7 @@
 import { Session } from "../../db/models/session.js"
 import { AppError, messages } from "../../utils/index.js"
 
+
 export const joinSession=async(socket,data)=>{
     const {sessionId}=data
     try {
@@ -63,3 +64,5 @@ export const joinSession=async(socket,data)=>{
             })
         }
     }
+
+
