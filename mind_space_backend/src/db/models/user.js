@@ -12,6 +12,13 @@ const userSchema=new Schema({
     age:{type:Number,required: function () {
         return this.provider === provider.system ? true : false;
       },min:18},
+      phoneNumber: {
+            type: String,
+            required: function () {
+              return this.provider === provider.system ? true : false;
+            },
+            unique: [true, "phone already exists"],
+          },
     role:{type:String,required:true,enum:Object.values(roles)},
     gender:{type:"string",enum:genders},
     pfp:{
@@ -41,6 +48,12 @@ const userSchema=new Schema({
       enum: [provider.google, provider.system],
       default: provider.system,
     },
+    experience:{type:String,required:function(){
+      return this.role ==roles.therapist?true:false
+    }},
+    sessionFee:{type:String,required:function(){
+      return this.role ==roles.therapist?true:false
+    }}
 
 },{
     versionKey:false,timestamps:true

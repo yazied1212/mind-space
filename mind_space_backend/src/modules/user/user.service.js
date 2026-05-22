@@ -1,14 +1,21 @@
 import { Report } from "../../db/models/report.js";
+import { Session } from "../../db/models/session.js";
 import { User } from "../../db/models/user.js";
-import { defaultPfpId, defaultPfpUrl, messages } from "../../utils/index.js";
+import { defaultPfpId, defaultPfpUrl, messages, roles } from "../../utils/index.js";
 import cloudinary from "../../utils/multer/cloud-config.js";
 
 
 
 //get profile
-export const profile = (req, res, next) => {
+export const profile = async(req, res, next) => {
 
   const userExists = req.authUser;
+  if(userExists.role==roles.therapist){
+
+    const patients= await Session.distinct("userId",{therapistId: userExists._id,})
+    
+    userExists.patients=patients.length
+  }
 
   return res.status(200).json({
     success: true,

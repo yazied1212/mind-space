@@ -15,11 +15,23 @@ export const signUpSchema = joi
       .string()
       .valid(...genders)
       .required(),
+      phoneNumber: joi
+            .string()
+            .pattern(/^[0-9]{10,15}$/)
+            .required(),
     role:joi.string().valid(...Object.values(roles)).required(),
     age:joi.number().min(18).required(),
     specialty: joi.when("role", {
       is: roles.therapist,
       then: joi.string().valid(...specialties).required(),
+      otherwise: joi.forbidden()
+    }),experience: joi.when("role", {
+      is: roles.therapist,
+      then: joi.string().required(),
+      otherwise: joi.forbidden()
+    }),sessionFee: joi.when("role", {
+      is: roles.therapist,
+      then: joi.string().required(),
       otherwise: joi.forbidden()
     }),
     
