@@ -43,7 +43,7 @@ export const signUp = async (req, res, next) => {
 
     const token=signToken({payload:{id:createdUser._id},options:{expiresIn:"1m"}})
    
-    const link=`https://mind-space-ov3r.onrender.com/auth/activate-account/${token}`
+    /*const link=`https://mind-space-ov3r.onrender.com/auth/activate-account/${token}`
     const isSent=await sendEmail({
         to:email,
         subject:"activate your account",
@@ -51,7 +51,7 @@ export const signUp = async (req, res, next) => {
     })
     if(!isSent){
         return next(new AppError("fail to send email please try again"))
-    }
+    }*/
 
   //res
   return res.status(201).json({
@@ -113,9 +113,9 @@ export const login = async (req, res, next) => {
     return next(new AppError(messages.user.invalidEorP, 401));
   }
 
-  if (user.isConfirmed === false) {
+  /*if (user.isConfirmed === false) {
     return next(new AppError("please activate your account", 401));
-  }
+  }*/
 
   if (user.isDeleted === true) {
     user.isDeleted = false;
