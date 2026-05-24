@@ -6,6 +6,7 @@ import { AppError, cvStatuses, messages, provider, roles, sendEmail, signToken, 
 import bcrypt from "bcrypt"
 import { getNewLoginCredentials, logoutEnum } from "../../utils/token/getNewCredentials.js";
 import { TokenModel } from "../../db/models/token.js";
+import cloudinary from "../../utils/multer/cloud-config.js";
 
 export const signUp = async (req, res, next) => {
 
