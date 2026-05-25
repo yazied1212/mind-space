@@ -243,14 +243,14 @@ export const judgeCV= async(req,res,next)=>{
   }
   
 
-    const isSent=await sendEmail({
+    /*const isSent=await sendEmail({
             to:user.email,
             subject:"cv",
             html:`<p>your cv got ${decision}</a></p>`
         })
         if(!isSent){
             return next(new AppError("fail to send email please try again"))
-        }
+        }*/
   
 
   return res.status(200).json({

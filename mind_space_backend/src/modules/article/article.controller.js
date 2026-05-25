@@ -20,7 +20,7 @@ router.post(
 );
 router.patch(
   "/like-unlike/:id",
-   isAuthorized(roles.therapist),
+   isAuthorized([roles.therapist,roles.user,roles.admin]),
   isValid(likeUnlikeSchema),
   asyncHandler(likeUnlike),
 );

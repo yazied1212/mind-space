@@ -7,7 +7,7 @@ import { isAuthenticate, isAuthorized, isValid } from "../../middlewares/index.j
 
 const router =Router()
 
-router.use(isAuthenticate, isAuthorized([roles.user,roles.therapist]));
+router.use(isAuthenticate, isAuthorized([roles.user,roles.therapist,roles.admin]));
 
 router.get("/profile", asyncHandler(profile));
 router.delete("/deactivate", asyncHandler(deactivate));
