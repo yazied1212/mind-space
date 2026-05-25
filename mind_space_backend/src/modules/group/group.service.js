@@ -29,7 +29,7 @@ export const leaveGroup = async (req, res, next) => {
 }
 
 export const createGroup = async (req, res, next) => {
-    const { adminId } = req.params
+    const adminId = req.authUser._id
     const { name, description } = req.body
 
     const groupExists = await SG.findOne({ name })
