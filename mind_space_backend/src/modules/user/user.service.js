@@ -9,7 +9,7 @@ import cloudinary from "../../utils/multer/cloud-config.js";
 //get profile
 export const profile = async(req, res, next) => {
 
-  const userExists = req.authUser;
+  const userExists = req.authUser.toObject();
   if(userExists.role==roles.therapist){
 
     const patients= await Session.distinct("userId",{therapistId: userExists._id,})
