@@ -1,7 +1,7 @@
 import { Report } from "../../db/models/report.js";
 import { Session } from "../../db/models/session.js";
 import { User } from "../../db/models/user.js";
-import { defaultPfpId, defaultPfpUrl, messages, roles } from "../../utils/index.js";
+import { AppError, defaultPfpId, defaultPfpUrl, messages, roles } from "../../utils/index.js";
 import cloudinary from "../../utils/multer/cloud-config.js";
 
 
@@ -112,6 +112,57 @@ export const report=async(req,res,next)=>{
     success:true,
     message:messages.report.createdSuccessfully,
     data:report
+  })
+
+}
+
+
+
+export const getTherapists=async(req,res,next)=>{
+
+  let { page, size } = req.query;
+    if (!page) {
+     page = 1;
+    }
+    if (!size) {
+        size = 20;
+     }
+    const skip = (page - 1) * size;
+
+  const therapists=await User.find({role:roles.therapist},{_id:1},{limit:size,slip:skip})
+
+  if(therapists.length===0){
+    return next(new AppError(messages.therapist.notFound,404))
+  }
+
+  return res.status(200).json({
+    success:true,
+    data:therapists
+  })
+}
+
+
+
+export const myPatients=async(req,res,next)=>{
+
+   let { page, size } = req.query;
+    if (!page) {
+     page = 1;
+    }
+    if (!size) {
+        size = 20;
+     }
+    const skip = (page - 1) * size;
+
+   const patients= await Session.distinct("userId",{therapistId:req.authUser._id})
+
+   if(patients.length===0){
+    return next(new AppError(messages.patient.notFound,404))
+   }
+
+  return res.status(200).json({
+    success:true,
+    data:patients
   })
 
 }
