@@ -33,4 +33,7 @@ export const messages = {
   report: generateMessages("report"),
   session: generateMessages("session"),
   group: generateMessages("group"),
+  therapist: generateMessages("therapist"),
+  patient: generateMessages("patient")
+  
 };

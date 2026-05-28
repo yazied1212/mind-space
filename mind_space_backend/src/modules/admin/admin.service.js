@@ -198,7 +198,7 @@ export const viewUsers=async(req,res,next)=>{
      }
     const skip = (page - 1) * size;
 
-    const users=await User.find({},{userName:1,email:1},{limit:size,slip:skip})
+    const users=await User.find({},{userName:1,email:1,role:1},{limit:size,slip:skip})
     
     if(users.length===0){
         return next(new AppError(messages.users.notFound,404))

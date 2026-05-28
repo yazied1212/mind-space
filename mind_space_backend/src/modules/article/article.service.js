@@ -18,10 +18,16 @@ export const createArticle = async (req, res, next) => {
     publisher: req.authUser._id,
   });
 
+  const articleResponse = createdArticle.toObject();
+  
+  articleResponse.userName = req.authUser.userName;
+  articleResponse.pfp = req.authUser.pfp;
+
+
   return res.status(201).json({
     success: true,
     message: messages.article.createdSuccessfully,
-    data:createdArticle,
+    data:articleResponse,
   });
 };
 
