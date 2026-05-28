@@ -149,4 +149,14 @@ export const getGroupMembers = async (req, res, next) => {
     });
 };
 
+export const getGroups = async (req, res, next) => {
+  const groups = await SG.find().populate("adminId", "name email");
+    return res.status(200).json({
+        success: true,
+        message: "Groups retrieved successfully",
+        result: groups
+    });
+};
+
+
 // Admin accept or reject join requests -----> need to be implemented by socket.io for real-time updates to users
