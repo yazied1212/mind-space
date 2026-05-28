@@ -158,5 +158,19 @@ export const getGroups = async (req, res, next) => {
     });
 };
 
+export const deleteGroup = async (req, res, next) => {
+    const { groupId } = req.params;
+    const groupExists = await SG.findById(groupId);
+    if (!groupExists) {
+        return next(new AppError("Group not found", 404));
+    }
+
+    await SG.findByIdAndDelete(groupId);
+    return res.status(200).json({
+        success: true,
+        message: "Group deleted successfully"
+    });
+}
+
 
 // Admin accept or reject join requests -----> need to be implemented by socket.io for real-time updates to users
