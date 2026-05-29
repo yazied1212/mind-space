@@ -1,4 +1,5 @@
 import joi from 'joi';
+import { generaleField } from '../../middlewares/index.js';
 
 export const requestSessionSchema = joi.object({
     therapistId: joi.string()
@@ -32,3 +33,8 @@ export const delaySessionSchema = joi.object({
             'string.pattern.base': 'Invalid session ID format.'
         })
 }).required();
+
+
+export const getSpecificSessionSchema=joi.object({
+    sessionId:generaleField.id.required()
+})

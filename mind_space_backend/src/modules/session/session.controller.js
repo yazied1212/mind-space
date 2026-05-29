@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { isAuthenticate, isAuthorized, isValid } from "../../middlewares/index.js";
 import { asyncHandler, roles } from "../../utils/index.js";
-import delaySession, {requestSession,  confirmSession, cancelSession } from "./session.service.js";
+import delaySession, {requestSession,  confirmSession, cancelSession, getAllSessions, getSpecificSession } from "./session.service.js";
 import {  delaySessionSchema, requestSessionSchema } from "./session.validation.js";
 
 const router = Router()
@@ -31,6 +31,7 @@ router.patch(
     isValid(delaySessionSchema),
     asyncHandler(delaySession)
 );
-
+router.get("/therapist",isAuthenticate,isAuthorized(roles.therapist),asyncHandler(getAllSessions))
+router.get("/:sessionId",isAuthenticate,isAuthorized([roles.user, roles.therapist]),isValid(getSpecificSession),asyncHandler(getSpecificSession))
 
 export default router

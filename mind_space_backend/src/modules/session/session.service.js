@@ -1,6 +1,6 @@
 import { User } from "../../db/models/user.js";
 import { Session } from "../../db/models/session.js";
-import { AppError, roles } from "../../utils/index.js";
+import { AppError, messages, roles } from "../../utils/index.js";
 
 export const requestSession = async (req, res, next) => {
     const { therapistId, sessionTime } = req.body;
@@ -121,5 +121,37 @@ export const delaySession = async (req, res, next) => {
 
     return res.status(200).json({ success: true, message, data: session });
 };
+
+export const getAllSessions=async(req,res,next)=>{
+
+    const sessions=await Session.find({therapistId:req.authUser.id},{messages:0}).populate("userId", "userName");
+    if(sessions.length===0){
+        return next(new AppError(messages.session.notFound,404))
+    }
+
+    return res.status(200).json({
+        success:true,
+        data:sessions
+    })
+}
+
+
+export const getSpecificSession=async(req,res,next)=>{
+    const {sessionId}=req.params
+
+    const session=await Session.findById(sessionId,{messages:0})
+    if(!session){
+        return next(new AppError(messages.session.notFound,404))
+    }
+    if(session.userId!=req.authUser._id&&session.therapistId!=req.authUser._id){
+        return next(new AppError("you are not part of this session",401))
+    }
+
+
+    return res.status(200).json({
+        success:true,
+        data:session
+    })
+}
 
 export default delaySession;
