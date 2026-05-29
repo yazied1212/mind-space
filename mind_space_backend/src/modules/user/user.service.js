@@ -129,7 +129,7 @@ export const getTherapists=async(req,res,next)=>{
      }
     const skip = (page - 1) * size;
 
-  const therapists=await User.find({role:roles.therapist},{_id:1},{limit:size,slip:skip})
+  const therapists=await User.find({role:roles.therapist},{_id:1,userName:1,pfp:1},{limit:size,slip:skip})
 
   if(therapists.length===0){
     return next(new AppError(messages.therapist.notFound,404))
@@ -154,11 +154,13 @@ export const myPatients=async(req,res,next)=>{
      }
     const skip = (page - 1) * size;
 
-   const patients= await Session.distinct("userId",{therapistId:req.authUser._id})
+   const patientsId= await Session.distinct("userId",{therapistId:req.authUser._id})
 
-   if(patients.length===0){
+   if(patientsId.length===0){
     return next(new AppError(messages.patient.notFound,404))
    }
+
+   const patients=await User.find({_id:{$in:patientsId}},{_id:1,userName:1,pfp:1})
 
   return res.status(200).json({
     success:true,
