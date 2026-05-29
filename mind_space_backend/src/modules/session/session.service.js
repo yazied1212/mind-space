@@ -17,7 +17,7 @@ export const requestSession = async (req, res, next) => {
         userId,
         therapistId,
         sessionTime: new Date(sessionTime),
-        status: "pending", // Fixed as pending until therapist acts
+        status: "scheduled", // Fixed as pending until therapist acts
         messages: []
     });
 
@@ -110,7 +110,7 @@ export const delaySession = async (req, res, next) => {
 
     // Update time and RESET status to pending
     session.sessionTime = new Date(newTime);
-    session.status = "pending"; // <--- THIS IS THE KEY CHANGE
+    session.status = "scheduled"; // <--- THIS IS THE KEY CHANGE
     
     await session.save();
 
