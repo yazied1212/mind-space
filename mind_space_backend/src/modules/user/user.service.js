@@ -129,7 +129,7 @@ export const getTherapists=async(req,res,next)=>{
      }
     const skip = (page - 1) * size;
 
-  const therapists=await User.find({role:roles.therapist},{_id:1,userName:1,pfp:1},{limit:size,slip:skip})
+  const therapists=await User.find({role:roles.therapist},{_id:1,userName:1,pfp:1,experience:1,specialty:1},{limit:size,slip:skip})
 
   if(therapists.length===0){
     return next(new AppError(messages.therapist.notFound,404))
