@@ -22,21 +22,21 @@ io.on("connection",async(socket)=>{
     socket.on("disconnect",()=>{
     handleDisconnection(socket)})
 
-     socket.on("joinSession",async(data)=>{
+     socket.on("joinSession",
         await catchSocketError(socket,joinSession) 
-     })
+     )
 
-     socket.on("leaveSession",async(data)=>{
+     socket.on("leaveSession",
       await catchSocketError(socket,leaveSession) 
-     })
+     )
 
-     socket.on("sendGroupMessage",async(data)=>{
+     socket.on("sendGroupMessage",
       await catchSocketError(socket,sendGroupMessage)
-     })
+     )
 
-      socket.on("sendMessage", async (data) => {
+      socket.on("sendMessage",
       await catchSocketError(socket,sendMessage)
-})
+)
 })
 
 
