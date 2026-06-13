@@ -40,12 +40,12 @@ const { sessionId } = req.params;
     }
 
     // 2. Ensure the session is actually in 'pending' state
-    if (session.status !== "pending") {
+    if (session.status !== "confirmed") {
         return next(new AppError(`Cannot confirm a session that is already ${session.status}`, 400));
     }
 
     // 3. Update status to scheduled
-    session.status = "scheduled";
+    session.status = "confirmed";
     await session.save();
 
     return res.status(200).json({

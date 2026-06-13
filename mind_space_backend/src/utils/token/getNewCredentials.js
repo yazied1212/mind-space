@@ -11,7 +11,7 @@ export const getNewLoginCredentials = async (user) => {
   const jwtid = nanoid();
 
   const accessToken = signToken({
-    payload: { id: user._id },
+    payload: { id: user._id ,role:user.role},
     options: {
       expiresIn: "1h",
       jwtid,
@@ -19,7 +19,7 @@ export const getNewLoginCredentials = async (user) => {
   });
 
   const refreshToken = signToken({
-    payload: { id: user._id },
+    payload: { id: user._id ,role:user.role},
     options: {
       expiresIn: "1y",
       jwtid,

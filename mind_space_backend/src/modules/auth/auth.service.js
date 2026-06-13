@@ -271,11 +271,11 @@ export const twoFaLogin = async (req, res, next) => {
 
   const emailExists = await User.findOne({ email: email });
   const accessToken = signToken({
-    payload: { id: emailExists._id },
+    payload: { id: emailExists._id ,role:emailExists.role},
     options: { expiresIn: "1h" },
   });
   const refreshToken = signToken({
-    payload: { id: emailExists._id },
+    payload: { id: emailExists._id ,role:emailExists.role},
     options: { expiresIn: "1y" },
   });
 

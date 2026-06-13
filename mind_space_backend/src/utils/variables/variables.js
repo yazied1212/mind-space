@@ -15,7 +15,7 @@ export const cvStatuses={
   rejected:"rejected"
 }
 
-export const sessionStatus=["scheduled","ongoing","finished","canceled","didn't show"]
+export const sessionStatus=["scheduled","ongoing","finished","canceled","didn't show","confirmed"]
 
 export const testStatus={
   inProgress:"in_progress",
