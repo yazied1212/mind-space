@@ -124,7 +124,10 @@ export const delaySession = async (req, res, next) => {
 
 export const getAllSessions=async(req,res,next)=>{
 
-    const sessions=await Session.find({therapistId:req.authUser.id},{messages:0}).populate("userId", "userName");
+    const sessions=await Session.find({ $or: [
+      { therapistId: req.authUser.id },
+      { userId: req.authUser.id }
+    ]},{messages:0}).populate("userId", "userName");
     if(sessions.length===0){
         return next(new AppError(messages.session.notFound,404))
     }
