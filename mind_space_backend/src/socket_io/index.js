@@ -23,19 +23,19 @@ io.on("connection",async(socket)=>{
     handleDisconnection(socket)})
 
      socket.on("joinSession",
-        await catchSocketError(socket,joinSession) 
+         catchSocketError(socket,joinSession) 
      )
 
      socket.on("leaveSession",
-      await catchSocketError(socket,leaveSession) 
+       catchSocketError(socket,leaveSession) 
      )
 
      socket.on("sendGroupMessage",
-      await catchSocketError(socket,sendGroupMessage)
+       catchSocketError(socket,sendGroupMessage)
      )
 
       socket.on("sendMessage",
-      await catchSocketError(socket,sendMessage)
+       catchSocketError(socket,sendMessage)
 )
 })
 
