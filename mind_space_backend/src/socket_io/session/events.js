@@ -104,3 +104,32 @@ export const sendMessage = async (socket, data) => {
         })
 
     } 
+
+
+    export const endSession=async(socket,data)=>{
+    const {sessionId}=data
+
+    const sessionExists=await Session.findById(sessionId)
+    if(!sessionExists){
+        return socket.emit("errorMessage",{
+            message:messages.session.notFound,
+            statusCode:404
+        })
+    }
+
+    const isTherapist=sessionExists.therapistId.toString()==socket.userId
+    if(!isTherapist){
+        return socket.emit("errorMessage",{
+            message:"only the therapist can end this session",
+            statusCode:401
+        })
+    }
+
+    sessionExists.status="finished"
+    await sessionExists.save()
+
+    socket.to(sessionId).emit("sessionEnded",{data:sessionId,message:"the session has ended"})
+
+    socket.emit("sessionEnded",{data:sessionId,message:"session ended successfully"})
+
+}
