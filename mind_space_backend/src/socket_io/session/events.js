@@ -71,3 +71,55 @@ export const joinSession=async(socket,data)=>{
     }
 
 
+export const sendMessage = async (socket, data) => {
+    const { sessionId, content } = data
+    try {
+
+        const sessionExists = await Session.findById(sessionId)
+        if (!sessionExists) {
+            return socket.emit("error", {
+                message: messages.session.notFound,
+                statusCode: 404
+            })
+        }
+
+        const isParticipant = sessionExists.userId.toString() == socket.userId || sessionExists.therapistId.toString() == socket.userId
+        if (!isParticipant) {
+            return socket.emit("error", {
+                message: "you are not allowed to send messages in this session",
+                statusCode: 401
+            })
+        }
+
+        if (!content || !content.trim()) {
+            return socket.emit("error", {
+                message: "message content cannot be empty",
+                statusCode: 400
+            })
+        }
+
+        sessionExists.messages.push({
+             sender: socket.userId,
+            message: content
+        })
+        await sessionExists.save()
+
+        const newMessage = sessionExists.messages[sessionExists.messages.length - 1]
+        
+        socket.to(sessionId).emit("receiveMessage", {
+            data: newMessage,
+            message: "new message received"
+        })
+
+        socket.emit("messageSent", {
+            data: newMessage,
+            message: "message sent successfully"
+        })
+
+    } catch (error) {
+        return socket.emit("error", {
+                message: error.message,
+                statusCode: 400
+            })
+        }
+    }

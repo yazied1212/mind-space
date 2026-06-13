@@ -32,6 +32,10 @@ io.on("connection",async(socket)=>{
      socket.on("sendGroupMessage",async(data)=>{
       await sendGroupMessage(socket,data)
      })
+
+      socket.on("sendMessage", async (data) => {
+      await sendMessage(socket, data)
+})
 })
 
 
