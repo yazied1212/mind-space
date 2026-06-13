@@ -1,7 +1,7 @@
 import { Server} from "socket.io"
 import { socketAuth } from "./middlewares/socket.auth.js"
 import { handleConnection, handleDisconnection } from "./hooks/online_users.js"
-import { joinSession, leaveSession, sendMessage } from "./session/events.js"
+import { endSession, joinSession, leaveSession, sendMessage } from "./session/events.js"
 import { sendGroupMessage } from "./group/events.js"
 import { catchSocketError } from "./middlewares/socket.error.handler.js"
 
