@@ -8,14 +8,14 @@ export const sendGroupMessage = async (socket, data) => {
     const {groupId, message} = data;
 
     if (!message?.trim()) {
-      return socket.emit("error", {
+      return socket.emit("errorMessage", {
         message: "message required",
       });
     }
 
     const group = await SG.findById(groupId);
     if(!group){
-        return socket.emit("error",{
+        return socket.emit("errorMessage",{
             message:messages.group.notFound,
             statusCode:404
         })
@@ -23,7 +23,7 @@ export const sendGroupMessage = async (socket, data) => {
 
     const isParticipant=await GM.findOne({groupId:groupId,usersId:socket.userId})
     if(!isParticipant){
-        return socket.emit("error",{
+        return socket.emit("errorMessage",{
             message:"not allowed",
             statusCode:401
         })
@@ -43,7 +43,7 @@ export const requestJoinGroup = async (socket, data) => {
         // check group exists
         const group = await SG.findById(groupId)
         if (!group) {
-            return socket.emit("error", {
+            return socket.emit("errorMessage", {
                 message: "Group not found",
                 statusCode: 404
             })
@@ -55,7 +55,7 @@ export const requestJoinGroup = async (socket, data) => {
             usersId: socket.userId
         })
         if (alreadyMember) {
-            return socket.emit("error", {
+            return socket.emit("errorMessage", {
                 message: "You are already a member of this group",
                 statusCode: 400
             })
@@ -68,7 +68,7 @@ export const requestJoinGroup = async (socket, data) => {
             status: "pending"
         })
         if (alreadyRequested) {
-            return socket.emit("error", {
+            return socket.emit("errorMessage", {
                 message: "You already have a pending request",
                 statusCode: 400
             })

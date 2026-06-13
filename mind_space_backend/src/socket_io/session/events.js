@@ -8,7 +8,7 @@ export const joinSession=async(socket,data)=>{
         
         const sessionExists=await Session.findById(sessionId)
         if(!sessionExists){
-            return socket.emit("error",{
+            return socket.emit("errorMessage",{
                 message:messages.session.notFound,
                 statusCode:404
             })
@@ -17,7 +17,7 @@ export const joinSession=async(socket,data)=>{
         
         const isParticipant=sessionExists.userId.toString()==socket.userId||sessionExists.therapistId.toString()==socket.userId
         if(!isParticipant){
-            return socket.emit("error",{
+            return socket.emit("errorMessage",{
                 message:"you are not allowed to join this session",
                 statusCode:401
             
@@ -30,7 +30,7 @@ export const joinSession=async(socket,data)=>{
         const sessionTime = new Date(sessionExists.sessionTime).getTime();
 
         if (now < sessionTime - tenMin) {
-        return socket.emit("error", {
+        return socket.emit("errorMessage", {
          message: `you can't join now, please come back at ${new Date(sessionTime).toISOString()}`,
          statusCode: 400
         } );
@@ -49,7 +49,7 @@ export const joinSession=async(socket,data)=>{
        
             const sessionExists=await Session.findById(sessionId)
             if(!sessionExists){
-            return socket.emit("error",{
+            return socket.emit("errorMessage",{
                 message:messages.session.notFound,
                 statusCode:404
             })
@@ -64,7 +64,7 @@ export const sendMessage = async (socket, data) => {
    
         const sessionExists = await Session.findById(sessionId)
         if (!sessionExists) {
-            return socket.emit("error", {
+            return socket.emit("errorMessage", {
                 message: messages.session.notFound,
                 statusCode: 404
             })
@@ -72,14 +72,14 @@ export const sendMessage = async (socket, data) => {
 
         const isParticipant = sessionExists.userId.toString() == socket.userId || sessionExists.therapistId.toString() == socket.userId
         if (!isParticipant) {
-            return socket.emit("error", {
+            return socket.emit("errorMessage", {
                 message: "you are not allowed to send messages in this session",
                 statusCode: 401
             })
         }
 
         if (!content || !content.trim()) {
-            return socket.emit("error", {
+            return socket.emit("errorMessage", {
                 message: "message content cannot be empty",
                 statusCode: 400
             })
