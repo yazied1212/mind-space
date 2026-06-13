@@ -31,7 +31,8 @@ router.patch(
     isValid(delaySessionSchema),
     asyncHandler(delaySession)
 );
-router.get("/therapist",isAuthenticate,isAuthorized([roles.user, roles.therapist]),asyncHandler(getAllSessions))
+router.get("/therapist",isAuthenticate,isAuthorized(roles.therapist),asyncHandler(getAllSessions))
+router.get("/patient",isAuthenticate,isAuthorized(roles.user),asyncHandler(getAllSessions))
 router.get("/:sessionId",isAuthenticate,isAuthorized([roles.user, roles.therapist]),isValid(getSpecificSession),asyncHandler(getSpecificSession))
 
 export default router

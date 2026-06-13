@@ -17,7 +17,7 @@ export const requestSession = async (req, res, next) => {
         userId,
         therapistId,
         sessionTime: new Date(sessionTime),
-        status: "scheduled", // Fixed as scheduled until therapist acts
+        status: "scheduled", // Fixed as pending until therapist acts
         messages: []
     });
 
@@ -39,8 +39,8 @@ const { sessionId } = req.params;
         return next(new AppError("Session request not found.", 404));
     }
 
-    // 2. Ensure the session is actually in 'scheduled' state
-    if (session.status !== "scheduled") {
+    // 2. Ensure the session is actually in 'pending' state
+    if (session.status !== "pending") {
         return next(new AppError(`Cannot confirm a session that is already ${session.status}`, 400));
     }
 
@@ -108,7 +108,7 @@ export const delaySession = async (req, res, next) => {
         return next(new AppError("Not authorized.", 403));
     }
 
-    // Update time and RESET status to scheduled
+    // Update time and RESET status to pending
     session.sessionTime = new Date(newTime);
     session.status = "scheduled"; // <--- THIS IS THE KEY CHANGE
     
