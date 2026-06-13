@@ -24,13 +24,17 @@ export const joinSession=async(socket,data)=>{
             })
         }
 
-        const tenMin=10 * 60 * 1000
-        if(Date.now() < sessionExists.sessionTime - tenMin ){
-            return socket.emit("error",{
-                message:`you cant join a now please comeback at ${sessionExists.sessionTime.toISOString()}`,
-                statusCode:400
-            })
-        }
+        const tenMin = 10 * 60 * 1000;
+
+        const now = Date.now();
+        const sessionTime = new Date(sessionExists.sessionTime).getTime();
+
+        if (now < sessionTime - tenMin) {
+        return socket.emit("error", {
+         message: `you can't join now, please come back at ${new Date(sessionTime).toISOString()}`,
+         statusCode: 400
+        } );
+            }
 
         socket.join(sessionId)
 
