@@ -1,3 +1,7 @@
+import { TokenModel } from "../../db/models/token.js";
+import { User } from "../../db/models/user.js";
+import { AppError, messages, verifyToken } from "../../utils/index.js";
+
 export const socketAuth = async (socket, next) => {
   try {
     const { authorization } = socket.handshake.auth;
