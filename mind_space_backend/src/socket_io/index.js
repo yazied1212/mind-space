@@ -37,11 +37,12 @@ io.on("connection",async(socket)=>{
       socket.on("sendMessage",
        catchSocketError(socket,sendMessage)
 )
-})
-
 socket.on("endSession",
     catchSocketError(socket,endSession) 
 )
+
+})
+
 
 
 }
