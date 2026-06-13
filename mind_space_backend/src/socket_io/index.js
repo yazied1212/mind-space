@@ -5,7 +5,15 @@ import { joinSession, leaveSession } from "./session/events.js"
 import { sendGroupMessage } from "./group/events.js"
 
 export const initSocket=(server)=>{
-const io=new Server(server,{cors:"*"})
+const io=new Server(server,{
+  cors: {
+    origin: [
+      "http://localhost:5173",
+      "https://your-frontend-domain.vercel.app",
+    ],
+    credentials: true,
+  },
+})
 io.use(socketAuth)
 io.on("connection",async(socket)=>{
     handleConnection(socket)
