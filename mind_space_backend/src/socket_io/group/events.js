@@ -4,8 +4,7 @@ import { SG } from "../../db/models/support_group.js";
 import { messages } from "../../utils/index.js";
 import { JoinRequest } from "../../db/models/JoinRequest.js";
 export const sendGroupMessage = async (socket, data) => {
-    try {
-        
+    
     const {groupId, message} = data;
 
     if (!message?.trim()) {
@@ -34,21 +33,13 @@ export const sendGroupMessage = async (socket, data) => {
         {groupId:groupId},
         { $push: { messages: { sender: socket.userId, message } } },
       );
-    } catch (error) {
-        return socket.emit("error",{
-                message:error.message,
-                statusCode:400
-            })
-    }
- 
-    
-  };
+    } 
 ;
 
 export const requestJoinGroup = async (socket, data) => {
     const { groupId } = data
 
-    try {
+   
         // check group exists
         const group = await SG.findById(groupId)
         if (!group) {
@@ -101,10 +92,5 @@ export const requestJoinGroup = async (socket, data) => {
             data: joinRequest
         })
 
-    } catch (error) {
-        return socket.emit("error", {
-            message: error.message,
-            statusCode: 400
-        })
-    }
+    
 }

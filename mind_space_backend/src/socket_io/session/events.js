@@ -4,7 +4,7 @@ import { AppError, messages } from "../../utils/index.js"
 
 export const joinSession=async(socket,data)=>{
     const {sessionId}=data
-    try {
+ 
         
         const sessionExists=await Session.findById(sessionId)
         if(!sessionExists){
@@ -40,19 +40,13 @@ export const joinSession=async(socket,data)=>{
 
         socket.emit("joinedSession",{data:sessionId,message:"joined successfully"})
     
-    } catch (error) {
-        return socket.emit("error",{
-                message:error.message,
-                statusCode:400
-            })
-        }
-    }
+    } 
     
 
     export const leaveSession=async(socket,data)=>{
     const {sessionId}=data
 
-        try {
+       
             const sessionExists=await Session.findById(sessionId)
             if(!sessionExists){
             return socket.emit("error",{
@@ -62,19 +56,12 @@ export const joinSession=async(socket,data)=>{
         }
          socket.leave(sessionId)
             socket.emit("leftSession",{data:sessionId,message:"left session successfully"})
-        } catch (error) {
-            return socket.emit("error",{
-                message:error.message,
-                statusCode:400
-            })
-        }
-    }
+        } 
 
 
 export const sendMessage = async (socket, data) => {
     const { sessionId, content } = data
-    try {
-
+   
         const sessionExists = await Session.findById(sessionId)
         if (!sessionExists) {
             return socket.emit("error", {
@@ -116,10 +103,4 @@ export const sendMessage = async (socket, data) => {
             message: "message sent successfully"
         })
 
-    } catch (error) {
-        return socket.emit("error", {
-                message: error.message,
-                statusCode: 400
-            })
-        }
-    }
+    } 

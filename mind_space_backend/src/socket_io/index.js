@@ -3,6 +3,7 @@ import { socketAuth } from "./middlewares/socket.auth.js"
 import { handleConnection, handleDisconnection } from "./hooks/online_users.js"
 import { joinSession, leaveSession } from "./session/events.js"
 import { sendGroupMessage } from "./group/events.js"
+import { catchSocketError } from "./middlewares/socket.error.handler.js"
 
 export const initSocket=(server)=>{
 const io=new Server(server,{
@@ -22,19 +23,19 @@ io.on("connection",async(socket)=>{
     handleDisconnection(socket)})
 
      socket.on("joinSession",async(data)=>{
-        await joinSession(socket,data)
+        await catchSocketError(socket,joinSession) 
      })
 
      socket.on("leaveSession",async(data)=>{
-      await leaveSession(socket,data)
+      await catchSocketError(socket,leaveSession) 
      })
 
      socket.on("sendGroupMessage",async(data)=>{
-      await sendGroupMessage(socket,data)
+      await catchSocketError(socket,sendGroupMessage)
      })
 
       socket.on("sendMessage", async (data) => {
-      await sendMessage(socket, data)
+      await catchSocketError(socket,sendMessage)
 })
 })
 
