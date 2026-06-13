@@ -14,11 +14,8 @@ export const joinSession=async(socket,data)=>{
             })
         }
 
-            console.log("DEBUG JOIN SESSION:");
-        console.log("sessionExists.userId:", sessionExists.userId);
-        console.log("sessionExists.therapistId:", sessionExists.therapistId);
-        console.log("socket.userId:", socket.userId);
-        const isParticipant=sessionExists.userId.toString()===socket.userId||sessionExists.therapistId.toString()===socket.userId
+        
+        const isParticipant=sessionExists.userId.toString()==socket.userId||sessionExists.therapistId.toString()==socket.userId
         if(!isParticipant){
             return socket.emit("error",{
                 message:"you are not allowed to join this session",
