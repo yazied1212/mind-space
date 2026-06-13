@@ -142,7 +142,7 @@ export const getAllSessions=async(req,res,next)=>{
 export const getSpecificSession=async(req,res,next)=>{
     const {sessionId}=req.params
 
-    const session=await Session.findById(sessionId,{messages:0})
+    const session=await Session.findById(sessionId)
     if(!session){
         return next(new AppError(messages.session.notFound,404))
     }

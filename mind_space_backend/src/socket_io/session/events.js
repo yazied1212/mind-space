@@ -13,7 +13,13 @@ export const joinSession=async(socket,data)=>{
                 statusCode:404
             })
         }
-
+        
+        if(sessionExists.status!="confirmed"){
+            return socket.emit("errorMessage",{
+                message:"please wait for therapist confirmation",
+                statusCode:400
+            })
+        }
         
         const isParticipant=sessionExists.userId.toString()==socket.userId||sessionExists.therapistId.toString()==socket.userId
         if(!isParticipant){
@@ -131,5 +137,7 @@ export const sendMessage = async (socket, data) => {
     socket.to(sessionId).emit("sessionEnded",{data:sessionId,message:"the session has ended"})
 
     socket.emit("sessionEnded",{data:sessionId,message:"session ended successfully"})
+
+    socket.server.in(sessionId).socketsLeave(sessionId)
 
 }
