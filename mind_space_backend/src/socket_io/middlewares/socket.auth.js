@@ -6,13 +6,13 @@ export const socketAuth = async (socket, next) => {
   try {
     const { authorization } = socket.handshake.auth;
     if (!authorization) {
-      return socket.emit("error",{
+      return socket.emit("errorMessage",{
         message:"token not found",
         statusCode:404
       })
     }
     if (!authorization.startsWith("dash")) {
-      return socket.emit("error",{
+      return socket.emit("errorMessage",{
         message:"invalid bearer key",
         statusCode:400
       })
@@ -25,7 +25,7 @@ export const socketAuth = async (socket, next) => {
     jti: decoded.jti,
     });
     if (isBlacklisted) {
-     return socket.emit("error",{
+     return socket.emit("errorMessage",{
         message:"token is invalid (logged out)",
         statusCode:401
       })
@@ -35,28 +35,28 @@ export const socketAuth = async (socket, next) => {
     
 
     if (!user) {
-      return socket.emit("error",{
+      return socket.emit("errorMessage",{
         message:messages.user.notFound,
         statusCode:404
       })
     }
 
     if (user.changeCredentialsTime?.getTime() > decoded.iat * 1000) {
-   return socket.emit("error",{
+   return socket.emit("errorMessage",{
         message:"Token is Expired",
         statusCode:401
       })
 };
 
     if (user.isDeleted) {
-      return socket.emit("error",{
+      return socket.emit("errorMessage",{
         message:"account deactivated please login first",
         statusCode:400
       })
     }
     
     if (user.bannedUntil && user.bannedUntil > Date.now()) {
-        return socket.emit("error",{
+        return socket.emit("errorMessage",{
         message:"your account is temporarily banned",
         statusCode:403
       })
@@ -64,7 +64,7 @@ export const socketAuth = async (socket, next) => {
       
 
     if (user.deletedAt && user.deletedAt.getTime() > decoded.iat * 1000) {
-      return socket.emit("error",{
+      return socket.emit("errorMessage",{
         message:"token is destroyed",
         statusCode:400
       })
@@ -75,7 +75,7 @@ export const socketAuth = async (socket, next) => {
     socket.userId=user._id
     return next();
   } catch (error) {
-   return socket.emit("error",{
+   return socket.emit("errorMessage",{
         message:error.message,
         statusCode:400
       })
