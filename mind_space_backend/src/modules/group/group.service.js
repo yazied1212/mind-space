@@ -1,6 +1,7 @@
 import { GM } from "../../db/models/group_members.js"
 import { JoinRequest } from "../../db/models/JoinRequest.js"
 import { SG } from "../../db/models/support_group.js"
+import { GroupMessages } from "../../db/models/group messages.js"
 import { AppError } from "../../utils/error/AppError.js"
 
 
@@ -150,11 +151,21 @@ export const getGroupMembers = async (req, res, next) => {
 };
 
 export const getGroups = async (req, res, next) => {
-  const groups = await SG.find().populate("adminId", "name email");
+    const groups = await SG.find().populate("adminId", "userName email");
+    const groupMemberships = await GM.find().populate("usersId", "userName email pfp");
+
+    const result = groups.map(group => {
+        const membership = groupMemberships.find(m => m.groupId.toString() === group._id.toString());
+        return {
+            ...group.toObject(),
+            members: membership ? membership.usersId : []
+        };
+    });
+
     return res.status(200).json({
         success: true,
         message: "Groups retrieved successfully",
-        result: groups
+        result
     });
 };
 
@@ -173,4 +184,73 @@ export const deleteGroup = async (req, res, next) => {
 }
 
 
-// Admin accept or reject join requests -----> need to be implemented by socket.io for real-time updates to users
+export const getGroupMessages = async (req, res, next) => {
+    const { groupId } = req.params;
+
+    const group = await SG.findById(groupId);
+    if (!group) {
+        return next(new AppError("Group not found", 404));
+    }
+
+    const isMember = await GM.findOne({ groupId, usersId: req.authUser._id });
+    const isAdmin = group.adminId.toString() === req.authUser._id.toString();
+
+    if (!isMember && !isAdmin) {
+        return next(new AppError("You are not authorized to view this group's messages", 403));
+    }
+
+    const groupMessages = await GroupMessages.findOne({ groupId })
+        .populate("messages.sender", "userName pfp");
+
+    return res.status(200).json({
+        success: true,
+        data: groupMessages ? groupMessages.messages : []
+    });
+};
+
+export const getPendingRequests = async (req, res, next) => {
+    const requests = await JoinRequest.find({ status: "pending" })
+        .populate("groupId", "name")
+        .populate("userId", "userName email pfp");
+    return res.status(200).json({
+        success: true,
+        data: requests
+    });
+};
+
+export const handleJoinRequest = async (req, res, next) => {
+    const { requestId } = req.params;
+    const { action } = req.body; // "approve" or "reject"
+
+    if (!["approve", "reject"].includes(action)) {
+        return next(new AppError("Invalid action, must be approve or reject", 400));
+    }
+
+    const joinRequest = await JoinRequest.findById(requestId);
+    if (!joinRequest) {
+        return next(new AppError("Join request not found", 404));
+    }
+
+    if (joinRequest.status !== "pending") {
+        return next(new AppError(`Request is already ${joinRequest.status}`, 400));
+    }
+
+    if (action === "approve") {
+        joinRequest.status = "approved";
+        await joinRequest.save();
+
+        await GM.findOneAndUpdate(
+            { groupId: joinRequest.groupId },
+            { $addToSet: { usersId: joinRequest.userId } },
+            { upsert: true, new: true }
+        );
+    } else {
+        joinRequest.status = "rejected";
+        await joinRequest.save();
+    }
+
+    return res.status(200).json({
+        success: true,
+        message: `Join request successfully ${action}d`
+    });
+};
