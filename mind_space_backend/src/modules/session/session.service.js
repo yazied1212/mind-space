@@ -127,7 +127,7 @@ export const getAllSessions=async(req,res,next)=>{
     const sessions=await Session.find({ $or: [
       { therapistId: req.authUser.id },
       { userId: req.authUser.id }
-    ]},{messages:0}).populate("userId", "userName");
+    ]},{messages:0}).populate("userId", "userName","pfp");
     if(sessions.length===0){
         return next(new AppError(messages.session.notFound,404))
     }
