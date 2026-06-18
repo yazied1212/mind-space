@@ -10,6 +10,7 @@ import adminRouter from "./modules/admin/admin.controller.js"
 import groupRouter from "./modules/group/group.controller.js"
 import sessionRouter from "./modules/session/session.controller.js"
 import cors from "cors";
+import { secondLimiter, minuteLimiter } from "./middlewares/rateLimiter.js";
 
 
 
@@ -17,6 +18,10 @@ export const bootStrap=async(express,app)=>{
      app.use(cors());
 
     app.use(express.json())
+
+    // Rate limiting: 10 req/sec and 100 req/min per IP
+    app.use(secondLimiter);
+    app.use(minuteLimiter);
   
     await isConnected()
 
