@@ -31,9 +31,13 @@ export const addFeedback = async(req,res,next)=>{
             content
         });
 
+        const feedbackResponse=feedback.toObject()
+        feedbackResponse.userName = req.authUser.userName;
+        feedbackResponse.pfp = req.authUser.pfp;
+
         return res.status(201).json({
             status: "Success",
-            data: feedback
+            data: feedbackResponse
         });
 
 }
